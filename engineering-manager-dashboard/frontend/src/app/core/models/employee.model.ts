@@ -9,6 +9,7 @@ export interface Employee {
   project: string;
   manager?: Employee | null;
   managerId: string | null;
+  directReports?: Employee[];
   joiningDate: string;
   totalExperienceYears: number;
   currentRoleSince: string;

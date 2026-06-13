@@ -6,7 +6,7 @@
     class="w-72 border-r-0!"
   >
     <div class="flex items-center gap-2 px-4 py-4">
-      <mat-icon class="text-primary">insights</mat-icon>
+      <mat-icon class="text-primary!">insights</mat-icon>
       <span class="text-lg font-semibold leading-tight">Engineering Manager<br />Dashboard</span>
     </div>
     <mat-nav-list>
@@ -14,7 +14,7 @@
         <a
           mat-list-item
           [routerLink]="item.route"
-          routerLinkActive="bg-primary/10 text-primary"
+          routerLinkActive="bg-primary/10 text-primary!"
           (click)="isHandheld() && sidenav.close()"
         >
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>

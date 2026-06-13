@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { Role } from './core/models/enums';
 import { Shell } from './layout/shell/shell';
 
 export const routes: Routes = [
@@ -16,6 +18,15 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./features/dashboard/dashboard-home/dashboard-home').then((m) => m.DashboardHome),
+      },
+      {
+        path: 'employees',
+        canActivate: [roleGuard([Role.ENGINEERING_MANAGER, Role.DIRECTOR])],
+        loadComponent: () => import('./features/employees/employee-list/employee-list').then((m) => m.EmployeeList),
+      },
+      {
+        path: 'employees/:id',
+        loadComponent: () => import('./features/employees/employee-profile/employee-profile').then((m) => m.EmployeeProfile),
       },
     ],
   },

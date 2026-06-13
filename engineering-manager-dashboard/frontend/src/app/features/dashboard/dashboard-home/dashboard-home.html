@@ -70,8 +70,8 @@
 } @else {
   <div class="flex flex-col gap-4">
     <mat-card>
-      <mat-card-content class="flex items-center gap-4 p-2!">
-        <mat-icon class="text-primary scale-150">waving_hand</mat-icon>
+      <mat-card-content class="flex! items-center gap-4 p-2!">
+        <mat-icon class="text-primary! scale-150">waving_hand</mat-icon>
         <div class="flex flex-col">
           <span class="text-lg font-semibold">Welcome back, {{ user()?.employee?.fullName ?? user()?.email }}</span>
           <span class="text-sm text-on-surface-variant">{{ user()?.employee?.designation }}</span>
@@ -83,7 +83,7 @@
       @for (link of quickLinks; track link.route) {
         <mat-card class="cursor-pointer hover:bg-surface-container-high transition-colors" [routerLink]="link.route">
           <mat-card-content class="flex! flex-col gap-2 p-2!">
-            <mat-icon class="text-primary">{{ link.icon }}</mat-icon>
+            <mat-icon class="text-primary!">{{ link.icon }}</mat-icon>
             <span class="font-medium">{{ link.label }}</span>
             <span class="text-sm text-on-surface-variant">{{ link.description }}</span>
           </mat-card-content>

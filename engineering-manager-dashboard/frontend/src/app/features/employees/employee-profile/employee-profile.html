@@ -1,0 +1,138 @@
+@if (isLoading()) {
+  <div class="flex justify-center py-16">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else if (error()) {
+  <mat-card>
+    <mat-card-content class="flex! items-center gap-3 p-2!">
+      <mat-icon class="text-error!">error</mat-icon>
+      <span>{{ error() }}</span>
+    </mat-card-content>
+  </mat-card>
+} @else if (employee(); as employee) {
+  <div class="flex flex-col gap-4">
+    @if (isManager()) {
+      <button mat-button (click)="goBack()" class="self-start">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Employees
+      </button>
+    }
+
+    <mat-card>
+      <mat-card-content class="flex! flex-col sm:flex-row sm:items-center gap-4 p-2!">
+        <div class="flex! items-center justify-center size-16 rounded-full bg-primary text-on-primary text-xl font-semibold shrink-0">
+          {{ initials() }}
+        </div>
+        <div class="flex flex-col gap-2">
+          <div>
+            <h1 class="text-xl font-semibold leading-tight">{{ employee.fullName }}</h1>
+            <p class="text-sm text-on-surface-variant">
+              {{ employee.designation }} &middot; {{ employee.employeeCode }} &middot; {{ employee.email }}
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <mat-chip>{{ employee.department }}</mat-chip>
+            <mat-chip>{{ employee.project }}</mat-chip>
+            <mat-chip>{{ employee.gradeBand }}</mat-chip>
+            <mat-chip>{{ employee.workLocation }}</mat-chip>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title class="text-base!">Personal Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="flex! flex-col gap-3 pt-2!">
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Manager</span>
+            @if (employee.manager) {
+              @if (isManager()) {
+                <a class="text-primary hover:underline" [routerLink]="['/employees', employee.manager.id]">{{ employee.manager.fullName }}</a>
+              } @else {
+                <span class="font-medium">{{ employee.manager.fullName }}</span>
+              }
+            } @else {
+              <span class="font-medium">—</span>
+            }
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Joining Date</span>
+            <span class="font-medium">{{ employee.joiningDate | date: 'mediumDate' }}</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Total Experience</span>
+            <span class="font-medium">{{ employee.totalExperienceYears }} years</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Current Role Since</span>
+            <span class="font-medium">{{ employee.currentRoleSince | date: 'mediumDate' }}</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Work Location</span>
+            <span class="font-medium">{{ employee.workLocation }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title class="text-base!">Career Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="flex! flex-col gap-3 pt-2!">
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Current Role</span>
+            <span class="font-medium">{{ employee.currentRole }}</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Target Role</span>
+            <span class="font-medium">{{ employee.targetRole ?? '—' }}</span>
+          </div>
+          <div class="flex justify-between gap-4">
+            <span class="text-on-surface-variant">Promotion Target Date</span>
+            <span class="font-medium">{{ employee.promotionTargetDate ? (employee.promotionTargetDate | date: 'mediumDate') : '—' }}</span>
+          </div>
+          @if (employee.careerAspirations) {
+            <div class="flex flex-col gap-1">
+              <span class="text-on-surface-variant">Career Aspirations</span>
+              <span>{{ employee.careerAspirations }}</span>
+            </div>
+          }
+          <div class="flex flex-col gap-1">
+            <div class="flex justify-between gap-4">
+              <span class="text-on-surface-variant">Promotion Readiness</span>
+              <span class="font-medium">{{ employee.readinessPercentage }}%</span>
+            </div>
+            <mat-progress-bar mode="determinate" [value]="employee.readinessPercentage"></mat-progress-bar>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    @if (isManager() && employee.directReports && employee.directReports.length > 0) {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title class="text-base!">Direct Reports</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-2!">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            @for (report of employee.directReports; track report.id) {
+              <a
+                [routerLink]="['/employees', report.id]"
+                class="flex! items-center gap-3 p-3 rounded-lg border border-outline-variant hover:bg-surface-container-high transition-colors"
+              >
+                <mat-icon class="text-primary!">person</mat-icon>
+                <div class="flex flex-col">
+                  <span class="font-medium">{{ report.fullName }}</span>
+                  <span class="text-xs text-on-surface-variant">{{ report.designation }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}

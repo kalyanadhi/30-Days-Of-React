@@ -67,13 +67,13 @@ export class DashboardHome {
     }
 
     return [
-      { label: 'Total Team Members', value: `${summary.totalTeamMembers}`, icon: 'groups', colorClass: 'text-primary' },
-      { label: 'High Performers', value: `${summary.highPerformers}`, icon: 'star', colorClass: 'text-success' },
-      { label: 'Promotion Ready', value: `${summary.promotionReady}`, icon: 'trending_up', colorClass: 'text-tertiary' },
-      { label: 'Employees at Risk', value: `${summary.employeesAtRisk}`, icon: 'warning', colorClass: 'text-error' },
-      { label: 'Avg Team Rating', value: summary.averageTeamRating.toFixed(2), icon: 'insights', colorClass: 'text-primary' },
-      { label: 'Open Development Plans', value: `${summary.openDevelopmentPlans}`, icon: 'school', colorClass: 'text-warning' },
-      { label: 'Upcoming Reviews', value: `${summary.upcomingReviews}`, icon: 'event', colorClass: 'text-secondary' },
+      { label: 'Total Team Members', value: `${summary.totalTeamMembers}`, icon: 'groups', colorClass: 'text-primary!' },
+      { label: 'High Performers', value: `${summary.highPerformers}`, icon: 'star', colorClass: 'text-success!' },
+      { label: 'Promotion Ready', value: `${summary.promotionReady}`, icon: 'trending_up', colorClass: 'text-tertiary!' },
+      { label: 'Employees at Risk', value: `${summary.employeesAtRisk}`, icon: 'warning', colorClass: 'text-error!' },
+      { label: 'Avg Team Rating', value: summary.averageTeamRating.toFixed(2), icon: 'insights', colorClass: 'text-primary!' },
+      { label: 'Open Development Plans', value: `${summary.openDevelopmentPlans}`, icon: 'school', colorClass: 'text-warning!' },
+      { label: 'Upcoming Reviews', value: `${summary.upcomingReviews}`, icon: 'event', colorClass: 'text-secondary!' },
     ];
   });
 
