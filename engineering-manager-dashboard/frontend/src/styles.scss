@@ -1,7 +1,26 @@
 @use '@angular/material' as mat;
 @use 'tailwindcss';
+@use './styles/fonts';
 
 @custom-variant dark (&:where(.dark-theme, .dark-theme *));
+
+@theme {
+  --color-primary: var(--mat-sys-primary);
+  --color-on-primary: var(--mat-sys-on-primary);
+  --color-secondary: var(--mat-sys-secondary);
+  --color-tertiary: var(--mat-sys-tertiary);
+  --color-surface: var(--mat-sys-surface);
+  --color-surface-container: var(--mat-sys-surface-container);
+  --color-surface-container-low: var(--mat-sys-surface-container-low);
+  --color-surface-container-high: var(--mat-sys-surface-container-high);
+  --color-on-surface: var(--mat-sys-on-surface);
+  --color-on-surface-variant: var(--mat-sys-on-surface-variant);
+  --color-outline: var(--mat-sys-outline);
+  --color-outline-variant: var(--mat-sys-outline-variant);
+  --color-error: var(--mat-sys-error);
+  --color-success: #2e7d32;
+  --color-warning: #ed6c02;
+}
 
 html {
   @include mat.theme(

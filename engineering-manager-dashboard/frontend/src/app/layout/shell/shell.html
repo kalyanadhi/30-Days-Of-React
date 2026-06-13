@@ -1,0 +1,72 @@
+<mat-sidenav-container class="h-screen">
+  <mat-sidenav
+    #sidenav
+    [mode]="isHandheld() ? 'over' : 'side'"
+    [opened]="!isHandheld()"
+    class="w-72 border-r-0!"
+  >
+    <div class="flex items-center gap-2 px-4 py-4">
+      <mat-icon class="text-primary">insights</mat-icon>
+      <span class="text-lg font-semibold leading-tight">Engineering Manager<br />Dashboard</span>
+    </div>
+    <mat-nav-list>
+      @for (item of navItems(); track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="bg-primary/10 text-primary"
+          (click)="isHandheld() && sidenav.close()"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="flex! items-center gap-2 sticky top-0 z-10">
+      @if (isHandheld()) {
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
+      <span class="flex-1"></span>
+
+      <button mat-icon-button (click)="toggleTheme()" matTooltip="Toggle theme">
+        <mat-icon>{{ theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button
+        routerLink="/notifications"
+        matTooltip="Notifications"
+        [matBadge]="unreadCount()"
+        [matBadgeHidden]="unreadCount() === 0"
+        matBadgeColor="warn"
+        matBadgeSize="small"
+      >
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" matTooltip="Account">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <div class="px-4 py-2 min-w-48">
+          <div class="font-medium">{{ user()?.employee?.fullName ?? user()?.email }}</div>
+          <div class="text-sm opacity-60">{{ user()?.role }}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <main class="p-4 md:p-6">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

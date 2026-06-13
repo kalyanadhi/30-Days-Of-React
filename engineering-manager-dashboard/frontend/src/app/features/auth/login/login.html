@@ -1,0 +1,70 @@
+<div class="min-h-screen flex items-center justify-center bg-surface-container-low px-4">
+  <mat-card class="w-full max-w-md">
+    <mat-card-content class="p-6">
+      <div class="flex flex-col items-center gap-2 mb-6">
+        <mat-icon class="text-primary scale-150">insights</mat-icon>
+        <h1 class="text-xl font-semibold text-center">Engineering Manager Dashboard</h1>
+        <p class="text-sm text-on-surface-variant text-center">Sign in to continue</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email" />
+          @if (form.controls.email.hasError('required')) {
+            <mat-error>Email is required</mat-error>
+          }
+          @if (form.controls.email.hasError('email')) {
+            <mat-error>Enter a valid email</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (form.controls.password.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+
+        @if (error()) {
+          <p class="text-error text-sm">{{ error() }}</p>
+        }
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="h-11! mt-2"
+          [disabled]="isLoading()"
+        >
+          @if (isLoading()) {
+            <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
+          }
+          Sign in
+        </button>
+      </form>
+
+      <div class="mt-6 text-xs text-on-surface-variant border-t border-outline-variant pt-4">
+        <p class="font-medium mb-1">Demo credentials (password: Password@123)</p>
+        <p>Director: anita.sharma&#64;nimbustech.io</p>
+        <p>Engineering Manager: rahul.mehta&#64;nimbustech.io</p>
+        <p>Employee: priya.nair&#64;nimbustech.io</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

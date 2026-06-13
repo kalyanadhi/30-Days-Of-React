@@ -1,0 +1,94 @@
+@if (isManager()) {
+  @if (isLoading()) {
+    <div class="flex justify-center py-16">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        @for (card of summaryCards(); track card.label) {
+          <mat-card class="flex flex-col gap-2">
+            <mat-card-content class="flex! items-center gap-4 p-2!">
+              <mat-icon class="scale-125" [class]="card.colorClass">{{ card.icon }}</mat-icon>
+              <div class="flex flex-col">
+                <span class="text-2xl font-semibold leading-tight">{{ card.value }}</span>
+                <span class="text-xs text-on-surface-variant">{{ card.label }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title class="text-base!">Performance Rating Distribution</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div echarts [options]="ratingDistributionOptions()" [theme]="chartTheme()" [autoResize]="true" class="h-80 block"></div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title class="text-base!">Team Performance Trend</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div echarts [options]="performanceTrendOptions()" [theme]="chartTheme()" [autoResize]="true" class="h-80 block"></div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title class="text-base!">Promotion Readiness</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div echarts [options]="promotionReadinessOptions()" [theme]="chartTheme()" [autoResize]="true" class="h-80 block"></div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title class="text-base!">Team Skill Matrix</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div echarts [options]="skillMatrixOptions()" [theme]="chartTheme()" [autoResize]="true" class="h-80 block"></div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="lg:col-span-2">
+          <mat-card-header>
+            <mat-card-title class="text-base!">Experience Distribution</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div echarts [options]="experienceDistributionOptions()" [theme]="chartTheme()" [autoResize]="true" class="h-80 block"></div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+} @else {
+  <div class="flex flex-col gap-4">
+    <mat-card>
+      <mat-card-content class="flex items-center gap-4 p-2!">
+        <mat-icon class="text-primary scale-150">waving_hand</mat-icon>
+        <div class="flex flex-col">
+          <span class="text-lg font-semibold">Welcome back, {{ user()?.employee?.fullName ?? user()?.email }}</span>
+          <span class="text-sm text-on-surface-variant">{{ user()?.employee?.designation }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (link of quickLinks; track link.route) {
+        <mat-card class="cursor-pointer hover:bg-surface-container-high transition-colors" [routerLink]="link.route">
+          <mat-card-content class="flex! flex-col gap-2 p-2!">
+            <mat-icon class="text-primary">{{ link.icon }}</mat-icon>
+            <span class="font-medium">{{ link.label }}</span>
+            <span class="text-sm text-on-surface-variant">{{ link.description }}</span>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  </div>
+}
