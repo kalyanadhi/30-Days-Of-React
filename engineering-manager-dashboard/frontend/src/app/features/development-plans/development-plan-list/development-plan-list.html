@@ -1,7 +1,13 @@
 <div class="flex flex-col gap-6">
-  <div class="flex items-center gap-2">
-    <mat-icon class="text-primary!">school</mat-icon>
-    <h1 class="text-2xl font-semibold m-0">Development Plans</h1>
+  <div class="flex items-center justify-between gap-2 flex-wrap">
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-primary!">school</mat-icon>
+      <h1 class="text-2xl font-semibold m-0">Development Plans</h1>
+    </div>
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Add Plan
+    </button>
   </div>
 
   <div class="flex gap-3 items-end flex-wrap">

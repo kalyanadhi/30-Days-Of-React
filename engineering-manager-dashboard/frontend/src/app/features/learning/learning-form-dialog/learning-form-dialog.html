@@ -1,0 +1,89 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Training' : 'Add Training' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-2 min-w-[360px]">
+    <mat-form-field appearance="outline">
+      <mat-label>Employee</mat-label>
+      <mat-select formControlName="employeeId">
+        @for (emp of employees(); track emp.id) {
+          <mat-option [value]="emp.id">{{ emp.fullName }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('employeeId')?.hasError('required') && form.get('employeeId')?.touched) {
+        <mat-error>Employee is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Training Name</mat-label>
+      <input matInput formControlName="trainingName" />
+      @if (form.get('trainingName')?.hasError('required') && form.get('trainingName')?.touched) {
+        <mat-error>Training name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Certification Name</mat-label>
+      <input matInput formControlName="certificationName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Skill Area</mat-label>
+      <input matInput formControlName="skillArea" />
+      @if (form.get('skillArea')?.hasError('required') && form.get('skillArea')?.touched) {
+        <mat-error>Skill area is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Learning Hours</mat-label>
+      <input matInput type="number" min="0" formControlName="learningHours" />
+      @if (form.get('learningHours')?.hasError('required') && form.get('learningHours')?.touched) {
+        <mat-error>Learning hours is required</mat-error>
+      }
+      @if (form.get('learningHours')?.hasError('min') && form.get('learningHours')?.touched) {
+        <mat-error>Must be 0 or more</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Completion Status</mat-label>
+      <mat-select formControlName="completionStatus">
+        @for (s of statusOptions; track s) {
+          <mat-option [value]="s">{{ statusLabel(s) }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('completionStatus')?.hasError('required') && form.get('completionStatus')?.touched) {
+        <mat-error>Status is required</mat-error>
+      }
+    </mat-form-field>
+
+    @if (form.get('completionStatus')?.value === LearningCompletionStatus.COMPLETED) {
+      <mat-form-field appearance="outline">
+        <mat-label>Completion Date</mat-label>
+        <input matInput type="date" formControlName="completionDate" />
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Expiry Date</mat-label>
+      <input matInput type="date" formControlName="expiryDate" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="notes" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="isSaving()">
+    @if (isSaving()) {
+      <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+      {{ isEditMode ? 'Update' : 'Save' }}
+    }
+  </button>
+</mat-dialog-actions>

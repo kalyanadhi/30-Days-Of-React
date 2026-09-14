@@ -6,11 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { DevelopmentPlansService } from '../../../core/services/development-plans.service';
 import { DevelopmentPlan } from '../../../core/models/development-plan.model';
 import { GoalStatus } from '../../../core/models/enums';
+import { DevelopmentPlanFormDialog } from '../development-plan-form-dialog/development-plan-form-dialog';
 
 @Component({
   selector: 'app-development-plan-list',
@@ -23,6 +26,7 @@ import { GoalStatus } from '../../../core/models/enums';
     MatSelectModule,
     MatChipsModule,
     MatIconModule,
+    MatButtonModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
   ],
@@ -31,13 +35,14 @@ import { GoalStatus } from '../../../core/models/enums';
 })
 export class DevelopmentPlanList {
   private readonly developmentPlansService = inject(DevelopmentPlansService);
+  private readonly dialog = inject(MatDialog);
 
   readonly GoalStatus = GoalStatus;
   readonly isLoading = signal(true);
   readonly items = signal<DevelopmentPlan[]>([]);
   readonly statusFilter = signal<GoalStatus | ''>('');
 
-  readonly displayedColumns = ['title', 'employee', 'targetSkills', 'startDate', 'targetDate', 'status'];
+  readonly displayedColumns = ['title', 'employee', 'targetSkills', 'startDate', 'targetDate', 'status', 'actions'];
 
   readonly statusOptions: GoalStatus[] = [
     GoalStatus.NOT_STARTED,
@@ -53,12 +58,40 @@ export class DevelopmentPlanList {
   });
 
   constructor() {
+    this.loadData();
+  }
+
+  private loadData(): void {
+    this.isLoading.set(true);
     this.developmentPlansService.findAll().subscribe({
       next: (data) => {
         this.items.set(data);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false),
+    });
+  }
+
+  openCreateDialog(): void {
+    const ref = this.dialog.open(DevelopmentPlanFormDialog, {
+      data: {},
+      width: '600px',
+      maxWidth: '95vw',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result) this.loadData();
+    });
+  }
+
+  openEditDialog(plan: DevelopmentPlan, event: Event): void {
+    event.stopPropagation();
+    const ref = this.dialog.open(DevelopmentPlanFormDialog, {
+      data: { plan },
+      width: '600px',
+      maxWidth: '95vw',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result) this.loadData();
     });
   }
 

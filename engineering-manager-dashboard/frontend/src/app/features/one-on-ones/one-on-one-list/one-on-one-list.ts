@@ -9,8 +9,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { OneOnOnesService } from '../../../core/services/one-on-ones.service';
 import { OneOnOne } from '../../../core/models/one-on-one.model';
+import { OneOnOneFormDialog } from '../one-on-one-form-dialog/one-on-one-form-dialog';
 
 @Component({
   selector: 'app-one-on-one-list',
@@ -26,19 +29,21 @@ import { OneOnOne } from '../../../core/models/one-on-one.model';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatExpansionModule,
+    MatTooltipModule,
   ],
   templateUrl: './one-on-one-list.html',
   styleUrl: './one-on-one-list.scss',
 })
 export class OneOnOneList {
   private readonly oneOnOnesService = inject(OneOnOnesService);
+  private readonly dialog = inject(MatDialog);
 
   readonly isLoading = signal(true);
   readonly items = signal<OneOnOne[]>([]);
   readonly selectedMonthYear = signal('');
   readonly selected = signal<OneOnOne | null>(null);
 
-  readonly displayedColumns = ['employee', 'meetingDate', 'actionItems', 'followUpDate', 'hasNotes'];
+  readonly displayedColumns = ['employee', 'meetingDate', 'actionItems', 'followUpDate', 'hasNotes', 'actions'];
 
   readonly sortedItems = computed(() =>
     [...this.items()].sort(
@@ -96,12 +101,40 @@ export class OneOnOneList {
   });
 
   constructor() {
+    this.loadData();
+  }
+
+  private loadData(): void {
+    this.isLoading.set(true);
     this.oneOnOnesService.findAll().subscribe({
       next: (data) => {
         this.items.set(data);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false),
+    });
+  }
+
+  openCreateDialog(): void {
+    const ref = this.dialog.open(OneOnOneFormDialog, {
+      data: {},
+      width: '560px',
+      maxWidth: '95vw',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result) this.loadData();
+    });
+  }
+
+  openEditDialog(row: OneOnOne, event: Event): void {
+    event.stopPropagation();
+    const ref = this.dialog.open(OneOnOneFormDialog, {
+      data: { oneOnOne: row },
+      width: '560px',
+      maxWidth: '95vw',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result) this.loadData();
     });
   }
 

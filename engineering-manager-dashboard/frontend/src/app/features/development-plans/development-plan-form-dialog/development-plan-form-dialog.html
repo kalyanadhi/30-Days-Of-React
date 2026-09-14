@@ -1,0 +1,106 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit Development Plan' : 'New Development Plan' }}</h2>
+
+<mat-dialog-content class="min-w-[520px]!">
+  @if (isLoadingEmployees()) {
+    <div class="flex justify-center py-8">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-4 pt-2">
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Employee</mat-label>
+        <mat-select [(ngModel)]="employeeId" [disabled]="employeeIdDisabled" required>
+          @for (emp of employees(); track emp.id) {
+            <mat-option [value]="emp.id">{{ emp.fullName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="title" required placeholder="e.g. Backend leadership track">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="description" rows="3" placeholder="Brief description of the plan…"></textarea>
+      </mat-form-field>
+
+      <div>
+        <div class="text-sm font-medium mb-2">Target Skills</div>
+        @if (targetSkillsArray().length > 0) {
+          <mat-chip-set class="mb-3">
+            @for (skill of targetSkillsArray(); track $index) {
+              <mat-chip (removed)="removeSkill($index)">
+                {{ skill }}
+                <button matChipRemove type="button"><mat-icon>cancel</mat-icon></button>
+              </mat-chip>
+            }
+          </mat-chip-set>
+        }
+        <div class="flex gap-2 items-center">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Add a skill</mat-label>
+            <input
+              matInput
+              [(ngModel)]="newSkill"
+              (keydown.enter)="addSkill(); $event.preventDefault()"
+              placeholder="e.g. System Design"
+            >
+          </mat-form-field>
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="addSkill()"
+            class="mb-5"
+          >Add</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Start Date</mat-label>
+          <input matInput type="date" [(ngModel)]="startDate" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Target Date</mat-label>
+          <input matInput type="date" [(ngModel)]="targetDate" required>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="status" required>
+          @for (s of statusOptions; track s) {
+            <mat-option [value]="s">{{ statusLabel(s) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Milestones / Notes (optional)</mat-label>
+        <textarea matInput [(ngModel)]="milestones" rows="3" placeholder="Key milestones or additional notes…"></textarea>
+      </mat-form-field>
+
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="gap-2">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    [disabled]="!isFormValid() || isSaving()"
+    (click)="submit()"
+  >
+    @if (isSaving()) {
+      <mat-spinner diameter="20" class="inline-block"></mat-spinner>
+    } @else {
+      {{ isEdit ? 'Save Changes' : 'Create' }}
+    }
+  </button>
+</mat-dialog-actions>

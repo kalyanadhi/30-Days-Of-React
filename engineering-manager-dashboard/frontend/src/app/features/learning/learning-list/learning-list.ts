@@ -1,8 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -13,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { LearningService } from '../../../core/services/learning.service';
 import { LearningActivity } from '../../../core/models/learning.model';
 import { LearningCompletionStatus } from '../../../core/models/enums';
+import { LearningFormDialog } from '../learning-form-dialog/learning-form-dialog';
 
 @Component({
   selector: 'app-learning-list',
@@ -20,6 +23,7 @@ import { LearningCompletionStatus } from '../../../core/models/enums';
   imports: [
     DatePipe,
     FormsModule,
+    MatButtonModule,
     MatCardModule,
     MatChipsModule,
     MatFormFieldModule,
@@ -35,6 +39,7 @@ import { LearningCompletionStatus } from '../../../core/models/enums';
 })
 export class LearningList {
   private readonly learningService = inject(LearningService);
+  private readonly dialog = inject(MatDialog);
 
   readonly LearningCompletionStatus = LearningCompletionStatus;
   readonly isLoading = signal(true);
@@ -42,7 +47,7 @@ export class LearningList {
   readonly filterStatus = signal<LearningCompletionStatus | ''>('');
   readonly filterExpiringSoon = signal(false);
 
-  readonly displayedColumns = ['trainingName', 'skillArea', 'learningHours', 'completionStatus', 'completionDate', 'expiryDate'];
+  readonly displayedColumns = ['trainingName', 'skillArea', 'learningHours', 'completionStatus', 'completionDate', 'expiryDate', 'actions'];
 
   readonly filtered = computed(() => {
     let items = this.activities();
@@ -57,12 +62,38 @@ export class LearningList {
   readonly expiringSoonCount = computed(() => this.activities().filter((a) => this.isExpiringSoon(a.expiryDate)).length);
 
   constructor() {
+    this.loadData();
+  }
+
+  private loadData(): void {
+    this.isLoading.set(true);
     this.learningService.findAll().subscribe({
       next: (items) => {
         this.activities.set(items);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false),
+    });
+  }
+
+  openAddDialog(): void {
+    const ref = this.dialog.open(LearningFormDialog, { width: '520px' });
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadData();
+      }
+    });
+  }
+
+  openEditDialog(activity: LearningActivity): void {
+    const ref = this.dialog.open(LearningFormDialog, {
+      width: '520px',
+      data: { activity },
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadData();
+      }
     });
   }
 
