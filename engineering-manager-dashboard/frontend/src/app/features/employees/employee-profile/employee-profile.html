@@ -18,6 +18,7 @@
       </button>
     }
 
+    <!-- Header card -->
     <mat-card>
       <mat-card-content class="flex! flex-col sm:flex-row sm:items-center gap-4 p-2!">
         <div class="flex! items-center justify-center size-16 rounded-full bg-primary text-on-primary text-xl font-semibold shrink-0">
@@ -40,99 +41,507 @@
       </mat-card-content>
     </mat-card>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title class="text-base!">Personal Information</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="flex! flex-col gap-3 pt-2!">
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Manager</span>
-            @if (employee.manager) {
-              @if (isManager()) {
-                <a class="text-primary hover:underline" [routerLink]="['/employees', employee.manager.id]">{{ employee.manager.fullName }}</a>
-              } @else {
-                <span class="font-medium">{{ employee.manager.fullName }}</span>
-              }
-            } @else {
-              <span class="font-medium">—</span>
-            }
-          </div>
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Joining Date</span>
-            <span class="font-medium">{{ employee.joiningDate | date: 'mediumDate' }}</span>
-          </div>
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Total Experience</span>
-            <span class="font-medium">{{ employee.totalExperienceYears }} years</span>
-          </div>
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Current Role Since</span>
-            <span class="font-medium">{{ employee.currentRoleSince | date: 'mediumDate' }}</span>
-          </div>
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Work Location</span>
-            <span class="font-medium">{{ employee.workLocation }}</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
+    <!-- Tab group -->
+    <mat-tab-group animationDuration="150ms">
 
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title class="text-base!">Career Information</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="flex! flex-col gap-3 pt-2!">
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Current Role</span>
-            <span class="font-medium">{{ employee.currentRole }}</span>
+      <!-- ── Tab 1: Overview ─────────────────────────────────── -->
+      <mat-tab label="Overview">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title class="text-base!">Personal Information</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="flex! flex-col gap-3 pt-2!">
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Manager</span>
+                  @if (employee.manager) {
+                    @if (isManager()) {
+                      <a class="text-primary hover:underline" [routerLink]="['/employees', employee.manager.id]">{{ employee.manager.fullName }}</a>
+                    } @else {
+                      <span class="font-medium">{{ employee.manager.fullName }}</span>
+                    }
+                  } @else {
+                    <span class="font-medium">—</span>
+                  }
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Joining Date</span>
+                  <span class="font-medium">{{ employee.joiningDate | date: 'mediumDate' }}</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Total Experience</span>
+                  <span class="font-medium">{{ employee.totalExperienceYears }} years</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Current Role Since</span>
+                  <span class="font-medium">{{ employee.currentRoleSince | date: 'mediumDate' }}</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Work Location</span>
+                  <span class="font-medium">{{ employee.workLocation }}</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title class="text-base!">Career Information</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="flex! flex-col gap-3 pt-2!">
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Current Role</span>
+                  <span class="font-medium">{{ employee.currentRole }}</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Target Role</span>
+                  <span class="font-medium">{{ employee.targetRole ?? '—' }}</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-on-surface-variant">Promotion Target Date</span>
+                  <span class="font-medium">{{ employee.promotionTargetDate ? (employee.promotionTargetDate | date: 'mediumDate') : '—' }}</span>
+                </div>
+                @if (employee.careerAspirations) {
+                  <div class="flex flex-col gap-1">
+                    <span class="text-on-surface-variant">Career Aspirations</span>
+                    <span>{{ employee.careerAspirations }}</span>
+                  </div>
+                }
+                <div class="flex flex-col gap-1">
+                  <div class="flex justify-between gap-4">
+                    <span class="text-on-surface-variant">Promotion Readiness</span>
+                    <span class="font-medium">{{ employee.readinessPercentage }}%</span>
+                  </div>
+                  <mat-progress-bar mode="determinate" [value]="employee.readinessPercentage"></mat-progress-bar>
+                </div>
+              </mat-card-content>
+            </mat-card>
           </div>
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Target Role</span>
-            <span class="font-medium">{{ employee.targetRole ?? '—' }}</span>
+
+          @if (isManager() && employee.directReports && employee.directReports.length > 0) {
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title class="text-base!">Direct Reports</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="pt-2!">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  @for (report of employee.directReports; track report.id) {
+                    <a
+                      [routerLink]="['/employees', report.id]"
+                      class="flex! items-center gap-3 p-3 rounded-lg border border-outline-variant hover:bg-surface-container-high transition-colors"
+                    >
+                      <mat-icon class="text-primary!">person</mat-icon>
+                      <div class="flex flex-col">
+                        <span class="font-medium">{{ report.fullName }}</span>
+                        <span class="text-xs text-on-surface-variant">{{ report.designation }}</span>
+                      </div>
+                    </a>
+                  }
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
+
+          <!-- Quick stats row -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-primary! shrink-0">flag</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ activeGoalCount() }}</div>
+                  <div class="text-xs text-on-surface-variant">Active Goals</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-primary! shrink-0">star</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ achievements().length }}</div>
+                  <div class="text-xs text-on-surface-variant">Achievements</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-primary! shrink-0">people</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ oneOnOnes().length }}</div>
+                  <div class="text-xs text-on-surface-variant">1:1 Meetings</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-primary! shrink-0">menu_book</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ learnings().length }}</div>
+                  <div class="text-xs text-on-surface-variant">Learning Activities</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
           </div>
-          <div class="flex justify-between gap-4">
-            <span class="text-on-surface-variant">Promotion Target Date</span>
-            <span class="font-medium">{{ employee.promotionTargetDate ? (employee.promotionTargetDate | date: 'mediumDate') : '—' }}</span>
+        </div>
+      </mat-tab>
+
+      <!-- ── Tab 2: Evaluations ──────────────────────────────── -->
+      <mat-tab label="Evaluations">
+        <div class="pt-4">
+          <mat-card>
+            <mat-card-content class="overflow-x-auto p-0!">
+              <mat-table [dataSource]="evaluations()">
+                <ng-container matColumnDef="quarter">
+                  <mat-header-cell *matHeaderCellDef>Period</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.quarter }} {{ row.year }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="delivery">
+                  <mat-header-cell *matHeaderCellDef>Delivery</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span [matTooltip]="CATEGORY_LABELS['delivery']">{{ row.scores?.delivery ?? '—' }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="technical">
+                  <mat-header-cell *matHeaderCellDef>Technical</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.scores?.technical ?? '—' }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="quality">
+                  <mat-header-cell *matHeaderCellDef>Quality</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.scores?.quality ?? '—' }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="collaboration">
+                  <mat-header-cell *matHeaderCellDef>Collab</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.scores?.collaboration ?? '—' }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="learning">
+                  <mat-header-cell *matHeaderCellDef>Learning</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.scores?.learning ?? '—' }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="overall">
+                  <mat-header-cell *matHeaderCellDef>Overall</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="font-semibold">{{ row.overallScore ?? '—' }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="rating">
+                  <mat-header-cell *matHeaderCellDef>Rating</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    @if (row.ratingBand) {
+                      <span class="font-medium" [class]="ratingColor(row.ratingBand)">{{ row.ratingBand.replace('_', ' ') }}</span>
+                    } @else {
+                      <span class="text-on-surface-variant">—</span>
+                    }
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="evalColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: evalColumns"></mat-row>
+              </mat-table>
+              @if (evaluations().length === 0) {
+                <div class="flex justify-center py-8 text-on-surface-variant">No evaluations recorded.</div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- ── Tab 3: Goals ───────────────────────────────────── -->
+      <mat-tab label="Goals">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-blue-600! shrink-0">pending</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ activeGoalCount() }}</div>
+                  <div class="text-xs text-on-surface-variant">Active</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-green-600! shrink-0">check_circle</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ goals().length - activeGoalCount() }}</div>
+                  <div class="text-xs text-on-surface-variant">Completed</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-error! shrink-0">warning</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ goals().filter(g => g.status === GoalStatus.AT_RISK).length }}</div>
+                  <div class="text-xs text-on-surface-variant">At Risk</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-content class="flex! items-center gap-3 p-3!">
+                <mat-icon class="text-on-surface-variant shrink-0">flag</mat-icon>
+                <div>
+                  <div class="text-2xl font-semibold">{{ goals().length }}</div>
+                  <div class="text-xs text-on-surface-variant">Total</div>
+                </div>
+              </mat-card-content>
+            </mat-card>
           </div>
-          @if (employee.careerAspirations) {
-            <div class="flex flex-col gap-1">
-              <span class="text-on-surface-variant">Career Aspirations</span>
-              <span>{{ employee.careerAspirations }}</span>
+
+          <mat-card>
+            <mat-card-content class="overflow-x-auto p-0!">
+              <mat-table [dataSource]="goals()">
+                <ng-container matColumnDef="title">
+                  <mat-header-cell *matHeaderCellDef>Goal</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div>
+                      <div class="font-medium">{{ row.title }}</div>
+                      @if (isPastDue(row.dueDate, row.status)) {
+                        <div class="text-xs text-error!">Past due</div>
+                      }
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="dueDate">
+                  <mat-header-cell *matHeaderCellDef>Due</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span [class]="isPastDue(row.dueDate, row.status) ? 'text-error!' : ''">
+                      {{ row.dueDate | date: 'mediumDate' }}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="priority">
+                  <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="font-medium" [class]="priorityColor(row.priority)">{{ row.priority }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="progress">
+                  <mat-header-cell *matHeaderCellDef>Progress</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div class="flex items-center gap-2 min-w-24">
+                      <mat-progress-bar mode="determinate" [value]="row.progressPercentage" class="flex-1"></mat-progress-bar>
+                      <span class="text-xs w-8 text-right">{{ row.progressPercentage }}%</span>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="font-medium" [class]="goalStatusColor(row.status)">{{ row.status.replace('_', ' ') }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="goalColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: goalColumns"></mat-row>
+              </mat-table>
+              @if (goals().length === 0) {
+                <div class="flex justify-center py-8 text-on-surface-variant">No goals found.</div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- ── Tab 4: 1:1 Meetings ─────────────────────────────── -->
+      <mat-tab label="1:1 Meetings">
+        <div class="pt-4">
+          <mat-card>
+            <mat-card-content class="overflow-x-auto p-0!">
+              <mat-table [dataSource]="oneOnOnes()">
+                <ng-container matColumnDef="date">
+                  <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.meetingDate | date: 'mediumDate' }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="notes">
+                  <mat-header-cell *matHeaderCellDef>Notes</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="line-clamp-2 max-w-xs" [matTooltip]="row.notes">{{ row.notes || '—' }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actionItems">
+                  <mat-header-cell *matHeaderCellDef>Action Items</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    @if (row.actionItems && row.actionItems.length > 0) {
+                      <span class="text-primary font-medium">{{ row.actionItems.length }} item{{ row.actionItems.length === 1 ? '' : 's' }}</span>
+                    } @else {
+                      <span class="text-on-surface-variant">—</span>
+                    }
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="followUp">
+                  <mat-header-cell *matHeaderCellDef>Follow-up</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    @if (row.followUpDate) {
+                      <span>{{ row.followUpDate | date: 'mediumDate' }}</span>
+                    } @else {
+                      <span class="text-on-surface-variant">—</span>
+                    }
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="oo1Columns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: oo1Columns"></mat-row>
+              </mat-table>
+              @if (oneOnOnes().length === 0) {
+                <div class="flex justify-center py-8 text-on-surface-variant">No 1:1 meetings recorded.</div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- ── Tab 5: Development Plans ───────────────────────── -->
+      <mat-tab label="Dev Plans">
+        <div class="pt-4">
+          <mat-card>
+            <mat-card-content class="overflow-x-auto p-0!">
+              <mat-table [dataSource]="devPlans()">
+                <ng-container matColumnDef="title">
+                  <mat-header-cell *matHeaderCellDef>Plan</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="font-medium">{{ row.title }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="targetSkills">
+                  <mat-header-cell *matHeaderCellDef>Target Skills</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div class="flex flex-wrap gap-1">
+                      @for (skill of (row.targetSkills ?? []).slice(0, 3); track skill) {
+                        <mat-chip class="text-xs!">{{ skill }}</mat-chip>
+                      }
+                      @if ((row.targetSkills ?? []).length > 3) {
+                        <span class="text-xs text-on-surface-variant self-center">+{{ row.targetSkills.length - 3 }}</span>
+                      }
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="targetDate">
+                  <mat-header-cell *matHeaderCellDef>Target Date</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.targetDate | date: 'mediumDate' }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="font-medium">{{ row.status.replace('_', ' ') }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="planColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: planColumns"></mat-row>
+              </mat-table>
+              @if (devPlans().length === 0) {
+                <div class="flex justify-center py-8 text-on-surface-variant">No development plans found.</div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- ── Tab 6: Achievements ─────────────────────────────── -->
+      <mat-tab label="Achievements">
+        <div class="pt-4">
+          @if (achievements().length === 0) {
+            <div class="flex justify-center py-8 text-on-surface-variant">No achievements recorded.</div>
+          } @else {
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              @for (item of achievements(); track item.id) {
+                <mat-card>
+                  <mat-card-content class="flex! items-start gap-3 p-4!">
+                    <mat-icon class="text-primary! shrink-0 mt-0.5">{{ achievementIcon(item.category) }}</mat-icon>
+                    <div class="flex flex-col gap-1 min-w-0">
+                      <div class="font-medium leading-tight">{{ item.title }}</div>
+                      <div class="text-xs text-on-surface-variant">{{ item.category.replace('_', ' ') }} &middot; {{ item.date | date: 'mediumDate' }}</div>
+                      @if (item.description) {
+                        <div class="text-sm text-on-surface-variant mt-1">{{ item.description }}</div>
+                      }
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              }
             </div>
           }
-          <div class="flex flex-col gap-1">
-            <div class="flex justify-between gap-4">
-              <span class="text-on-surface-variant">Promotion Readiness</span>
-              <span class="font-medium">{{ employee.readinessPercentage }}%</span>
-            </div>
-            <mat-progress-bar mode="determinate" [value]="employee.readinessPercentage"></mat-progress-bar>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
+        </div>
+      </mat-tab>
 
-    @if (isManager() && employee.directReports && employee.directReports.length > 0) {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title class="text-base!">Direct Reports</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="pt-2!">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            @for (report of employee.directReports; track report.id) {
-              <a
-                [routerLink]="['/employees', report.id]"
-                class="flex! items-center gap-3 p-3 rounded-lg border border-outline-variant hover:bg-surface-container-high transition-colors"
-              >
-                <mat-icon class="text-primary!">person</mat-icon>
-                <div class="flex flex-col">
-                  <span class="font-medium">{{ report.fullName }}</span>
-                  <span class="text-xs text-on-surface-variant">{{ report.designation }}</span>
-                </div>
-              </a>
-            }
-          </div>
-        </mat-card-content>
-      </mat-card>
-    }
+      <!-- ── Tab 7: Learning ────────────────────────────────── -->
+      <mat-tab label="Learning">
+        <div class="pt-4">
+          <mat-card>
+            <mat-card-content class="overflow-x-auto p-0!">
+              <mat-table [dataSource]="learnings()">
+                <ng-container matColumnDef="training">
+                  <mat-header-cell *matHeaderCellDef>Training</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div>
+                      <div class="font-medium">{{ row.trainingName }}</div>
+                      @if (row.certificationName) {
+                        <div class="text-xs text-on-surface-variant">{{ row.certificationName }}</div>
+                      }
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="skillArea">
+                  <mat-header-cell *matHeaderCellDef>Skill Area</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.skillArea }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="hours">
+                  <mat-header-cell *matHeaderCellDef>Hours</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.learningHours }}h</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="font-medium" [class]="learningStatusColor(row.completionStatus)">
+                      {{ row.completionStatus.replace('_', ' ') }}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="expiry">
+                  <mat-header-cell *matHeaderCellDef>Expires</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    @if (!row.expiryDate) {
+                      <span class="text-on-surface-variant">—</span>
+                    } @else if (isExpired(row.expiryDate)) {
+                      <span class="text-error!">{{ row.expiryDate | date: 'mediumDate' }}</span>
+                    } @else if (isExpiringSoon(row.expiryDate)) {
+                      <span class="text-warning!">{{ row.expiryDate | date: 'mediumDate' }}</span>
+                    } @else {
+                      <span>{{ row.expiryDate | date: 'mediumDate' }}</span>
+                    }
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="learningColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: learningColumns"></mat-row>
+              </mat-table>
+              @if (learnings().length === 0) {
+                <div class="flex justify-center py-8 text-on-surface-variant">No learning activities found.</div>
+              }
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
   </div>
 }
