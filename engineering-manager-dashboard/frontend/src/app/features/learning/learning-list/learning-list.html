@@ -1,0 +1,132 @@
+@if (isLoading()) {
+  <div class="flex justify-center py-16">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <div class="flex flex-col gap-4">
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-primary!">menu_book</mat-icon>
+      <h1 class="text-xl font-semibold">Learning & Development</h1>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <mat-card>
+        <mat-card-content class="flex! items-center gap-4 p-4!">
+          <mat-icon class="text-primary! scale-125">schedule</mat-icon>
+          <div>
+            <div class="text-2xl font-semibold">{{ totalHours() }}h</div>
+            <div class="text-xs text-on-surface-variant">Total Learning Hours</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content class="flex! items-center gap-4 p-4!">
+          <mat-icon class="text-green-600! scale-125">check_circle</mat-icon>
+          <div>
+            <div class="text-2xl font-semibold">{{ completedCount() }}</div>
+            <div class="text-xs text-on-surface-variant">Completed</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content class="flex! items-center gap-4 p-4!">
+          <mat-icon class="text-blue-600! scale-125">pending</mat-icon>
+          <div>
+            <div class="text-2xl font-semibold">{{ inProgressCount() }}</div>
+            <div class="text-xs text-on-surface-variant">In Progress</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content class="flex! items-center gap-4 p-4!">
+          <mat-icon class="text-warning! scale-125">hourglass_bottom</mat-icon>
+          <div>
+            <div class="text-2xl font-semibold">{{ expiringSoonCount() }}</div>
+            <div class="text-xs text-on-surface-variant">Expiring Soon</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="flex items-center gap-4 flex-wrap">
+      <mat-form-field appearance="outline" class="w-48">
+        <mat-label>Status</mat-label>
+        <mat-select [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
+          <mat-option value="">All</mat-option>
+          <mat-option [value]="LearningCompletionStatus.NOT_STARTED">Not Started</mat-option>
+          <mat-option [value]="LearningCompletionStatus.IN_PROGRESS">In Progress</mat-option>
+          <mat-option [value]="LearningCompletionStatus.COMPLETED">Completed</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-slide-toggle [checked]="filterExpiringSoon()" (change)="filterExpiringSoon.set($event.checked)">
+        Expiring soon only
+      </mat-slide-toggle>
+    </div>
+
+    <mat-card>
+      <mat-card-content class="overflow-x-auto p-0!">
+        <mat-table [dataSource]="filtered()">
+          <ng-container matColumnDef="trainingName">
+            <mat-header-cell *matHeaderCellDef>Training</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <div>
+                <div class="font-medium">{{ row.trainingName }}</div>
+                @if (row.certificationName) {
+                  <div class="text-xs text-on-surface-variant">{{ row.certificationName }}</div>
+                }
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="skillArea">
+            <mat-header-cell *matHeaderCellDef>Skill Area</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.skillArea }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="learningHours">
+            <mat-header-cell *matHeaderCellDef>Hours</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.learningHours }}h</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="completionStatus">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-chip [class]="statusColor(row.completionStatus)">
+                {{ row.completionStatus.replace('_', ' ') }}
+              </mat-chip>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="completionDate">
+            <mat-header-cell *matHeaderCellDef>Completed</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{ row.completionDate ? (row.completionDate | date:'mediumDate') : '—' }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="expiryDate">
+            <mat-header-cell *matHeaderCellDef>Expires</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              @if (!row.expiryDate) {
+                <span class="text-on-surface-variant">—</span>
+              } @else if (isExpired(row.expiryDate)) {
+                <span class="text-error!">{{ row.expiryDate | date:'mediumDate' }}</span>
+              } @else if (isExpiringSoon(row.expiryDate)) {
+                <span class="text-warning!">{{ row.expiryDate | date:'mediumDate' }}</span>
+              } @else {
+                <span>{{ row.expiryDate | date:'mediumDate' }}</span>
+              }
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+
+        @if (filtered().length === 0) {
+          <div class="flex justify-center py-8 text-on-surface-variant">No learning activities found.</div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+}

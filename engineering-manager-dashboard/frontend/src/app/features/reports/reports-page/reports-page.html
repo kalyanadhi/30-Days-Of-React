@@ -1,0 +1,120 @@
+<div class="flex flex-col gap-4">
+  <div class="flex items-center gap-2">
+    <mat-icon class="text-primary!">description</mat-icon>
+    <h1 class="text-xl font-semibold">Reports</h1>
+  </div>
+
+  <div class="flex items-center gap-4 flex-wrap">
+    <mat-form-field appearance="outline" class="w-32">
+      <mat-label>Year</mat-label>
+      <mat-select [ngModel]="selectedYear()" (ngModelChange)="selectedYear.set($event)">
+        @for (y of years; track y) {
+          <mat-option [value]="y">{{ y }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-32">
+      <mat-label>Quarter</mat-label>
+      <mat-select [ngModel]="selectedQuarter()" (ngModelChange)="selectedQuarter.set($event)">
+        <mat-option value="">All</mat-option>
+        @for (q of quarters; track q) {
+          <mat-option [value]="q">{{ q }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (report of reports; track report.key) {
+      <mat-card class="flex flex-col">
+        <mat-card-content class="flex! flex-col gap-3 p-4! flex-1">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center size-10 rounded-xl bg-primary/10">
+              <mat-icon class="text-primary!">{{ report.icon }}</mat-icon>
+            </div>
+            <div>
+              <div class="font-semibold leading-tight">{{ report.label }}</div>
+              @if (report.supportsQuarter) {
+                <div class="text-xs text-on-surface-variant">Filterable by quarter</div>
+              }
+            </div>
+          </div>
+          <p class="text-sm text-on-surface-variant leading-relaxed">{{ report.description }}</p>
+          <div class="flex items-center gap-2 mt-auto pt-2 border-t border-outline-variant flex-wrap">
+            <button mat-button (click)="preview(report)" class="flex-1">
+              @if (previewingKey() === report.key && previewLoading()) {
+                <mat-spinner diameter="16" class="inline-block mr-1"></mat-spinner>
+              } @else {
+                <mat-icon>visibility</mat-icon>
+              }
+              Preview
+            </button>
+            <button mat-icon-button matTooltip="Export CSV" (click)="export(report, 'csv')" [disabled]="exportingKey() === report.key + '-csv'">
+              @if (exportingKey() === report.key + '-csv') {
+                <mat-spinner diameter="16"></mat-spinner>
+              } @else {
+                <mat-icon>table_chart</mat-icon>
+              }
+            </button>
+            <button mat-icon-button matTooltip="Export Excel" (click)="export(report, 'excel')" [disabled]="exportingKey() === report.key + '-excel'">
+              @if (exportingKey() === report.key + '-excel') {
+                <mat-spinner diameter="16"></mat-spinner>
+              } @else {
+                <mat-icon>grid_on</mat-icon>
+              }
+            </button>
+            <button mat-icon-button matTooltip="Export PDF" (click)="export(report, 'pdf')" [disabled]="exportingKey() === report.key + '-pdf'">
+              @if (exportingKey() === report.key + '-pdf') {
+                <mat-spinner diameter="16"></mat-spinner>
+              } @else {
+                <mat-icon>picture_as_pdf</mat-icon>
+              }
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  @if (previewingKey(); as key) {
+    @if (!previewLoading() && previewData()) {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title class="text-base! flex items-center gap-2">
+            Preview: {{ reports.find(r => r.key === key)?.label }}
+            <span class="ml-auto">
+              <button mat-icon-button (click)="closePreview()"><mat-icon>close</mat-icon></button>
+            </span>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="overflow-x-auto p-4!">
+          @let rows = previewRows(previewData()!);
+          @let cols = previewKeys(rows);
+          @if (rows.length > 0) {
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b border-outline-variant">
+                  @for (col of cols; track col) {
+                    <th class="py-2 px-3 text-left font-medium text-on-surface-variant capitalize">{{ col }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of rows; track $index) {
+                  <tr class="border-b border-outline-variant/50 hover:bg-surface-container-low">
+                    @for (col of cols; track col) {
+                      <td class="py-2 px-3 truncate max-w-xs">{{ $any(row)[col] ?? '—' }}</td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+            <p class="text-xs text-on-surface-variant mt-2">Showing first {{ rows.length }} rows</p>
+          } @else {
+            <p class="text-on-surface-variant">No preview data available.</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+</div>

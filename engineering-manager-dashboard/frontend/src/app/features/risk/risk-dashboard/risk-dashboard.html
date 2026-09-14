@@ -1,0 +1,107 @@
+@if (isLoading()) {
+  <div class="flex justify-center py-16">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <div class="flex flex-col gap-4">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div class="flex items-center gap-2">
+        <mat-icon class="text-warning!">warning</mat-icon>
+        <h1 class="text-xl font-semibold">Risk Dashboard</h1>
+      </div>
+      <mat-slide-toggle [checked]="showOnlyHighRisk()" (change)="showOnlyHighRisk.set($event.checked)">
+        Show high-risk only
+      </mat-slide-toggle>
+    </div>
+
+    @if (heatmap(); as heatmap) {
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        @for (dim of [
+          { label: 'Attrition Risk', key: 'attrition', icon: 'directions_run' },
+          { label: 'Burnout Risk', key: 'burnout', icon: 'local_fire_department' },
+          { label: 'Skill Gap Risk', key: 'skillGap', icon: 'psychology' },
+          { label: 'Performance Risk', key: 'performance', icon: 'trending_down' }
+        ]; track dim.key) {
+          <mat-card>
+            <mat-card-content class="flex! flex-col gap-2 p-4!">
+              <div class="flex items-center gap-2">
+                <mat-icon class="text-on-surface-variant!">{{ dim.icon }}</mat-icon>
+                <span class="text-sm font-medium">{{ dim.label }}</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-error!">High: {{ $any(heatmap.summary)[$any(dim).key]?.high ?? 0 }}</span>
+                <span class="text-warning!">Med: {{ $any(heatmap.summary)[$any(dim).key]?.medium ?? 0 }}</span>
+                <span class="text-green-600">Low: {{ $any(heatmap.summary)[$any(dim).key]?.low ?? 0 }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title class="text-base!">
+          Employee Risk Heatmap
+          <span class="text-sm font-normal text-on-surface-variant ml-2">({{ filteredItems().length }} employees)</span>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="overflow-x-auto p-0!">
+        <mat-table [dataSource]="filteredItems()">
+          <ng-container matColumnDef="employee">
+            <mat-header-cell *matHeaderCellDef>Employee</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+              <div>
+                <div class="font-medium">{{ item.employee.fullName }}</div>
+                <div class="text-xs text-on-surface-variant">{{ item.employee.designation }}</div>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="attrition">
+            <mat-header-cell *matHeaderCellDef>Attrition</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+              <span class="px-2 py-0.5 rounded text-xs font-medium" [class]="riskBadgeClass(item.assessment.attritionRisk)">
+                {{ item.assessment.attritionRisk }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="burnout">
+            <mat-header-cell *matHeaderCellDef>Burnout</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+              <span class="px-2 py-0.5 rounded text-xs font-medium" [class]="riskBadgeClass(item.assessment.burnoutRisk)">
+                {{ item.assessment.burnoutRisk }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="skillGap">
+            <mat-header-cell *matHeaderCellDef>Skill Gap</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+              <span class="px-2 py-0.5 rounded text-xs font-medium" [class]="riskBadgeClass(item.assessment.skillGapRisk)">
+                {{ item.assessment.skillGapRisk }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="performance">
+            <mat-header-cell *matHeaderCellDef>Performance</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+              <span class="px-2 py-0.5 rounded text-xs font-medium" [class]="riskBadgeClass(item.assessment.performanceRisk)">
+                {{ item.assessment.performanceRisk }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row
+            *matRowDef="let item; columns: displayedColumns"
+            [class.bg-red-50!]="hasHighRisk(item)"
+            [class.dark:bg-red-900\/10!]="hasHighRisk(item)"
+          ></mat-row>
+        </mat-table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
