@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -9,11 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
 import { GoalsService } from '../../../core/services/goals.service';
 import { EmployeesService } from '../../../core/services/employees.service';
 import { Goal } from '../../../core/models/goal.model';
 import { Employee } from '../../../core/models/employee.model';
 import { GoalPriority, GoalStatus } from '../../../core/models/enums';
+import { GoalFormDialog } from '../goal-form-dialog/goal-form-dialog';
 
 @Component({
   selector: 'app-goal-list',
@@ -29,6 +32,8 @@ import { GoalPriority, GoalStatus } from '../../../core/models/enums';
     MatChipsModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatButtonModule,
+    GoalFormDialog,
   ],
   templateUrl: './goal-list.html',
   styleUrl: './goal-list.scss',
@@ -36,8 +41,9 @@ import { GoalPriority, GoalStatus } from '../../../core/models/enums';
 export class GoalList {
   private readonly goalsService = inject(GoalsService);
   private readonly employeesService = inject(EmployeesService);
+  private readonly dialog = inject(MatDialog);
 
-  readonly displayedColumns = ['title', 'employee', 'priority', 'dueDate', 'progress', 'status'];
+  readonly displayedColumns = ['title', 'employee', 'priority', 'dueDate', 'progress', 'status', 'actions'];
   readonly goalStatuses = Object.values(GoalStatus);
   readonly goalPriorities = Object.values(GoalPriority);
 
@@ -66,13 +72,7 @@ export class GoalList {
   readonly today = new Date().toISOString().split('T')[0];
 
   constructor() {
-    this.goalsService.findAll().subscribe({
-      next: (data) => {
-        this.goals.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => this.isLoading.set(false),
-    });
+    this.loadData();
 
     this.employeesService.findAll().subscribe({
       next: (employees) => {
@@ -84,6 +84,29 @@ export class GoalList {
       },
       error: () => {},
     });
+  }
+
+  loadData(): void {
+    this.isLoading.set(true);
+    this.goalsService.findAll().subscribe({
+      next: (data) => {
+        this.goals.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false),
+    });
+  }
+
+  openForm(goal?: Goal): void {
+    this.dialog
+      .open(GoalFormDialog, {
+        width: '640px',
+        data: { goal },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadData();
+      });
   }
 
   getEmployeeName(employeeId: string): string {

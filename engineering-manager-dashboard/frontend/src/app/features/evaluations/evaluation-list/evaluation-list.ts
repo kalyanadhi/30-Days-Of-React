@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -14,6 +15,7 @@ import { EmployeesService } from '../../../core/services/employees.service';
 import { PerformanceEvaluation } from '../../../core/models/evaluation.model';
 import { Employee } from '../../../core/models/employee.model';
 import { Quarter, RatingBand } from '../../../core/models/enums';
+import { EvaluationFormDialog } from '../evaluation-form-dialog/evaluation-form-dialog';
 
 @Component({
   selector: 'app-evaluation-list',
@@ -30,6 +32,7 @@ import { Quarter, RatingBand } from '../../../core/models/enums';
     MatProgressSpinnerModule,
     MatChipsModule,
     MatButtonModule,
+    EvaluationFormDialog,
   ],
   templateUrl: './evaluation-list.html',
   styleUrl: './evaluation-list.scss',
@@ -37,8 +40,9 @@ import { Quarter, RatingBand } from '../../../core/models/enums';
 export class EvaluationList {
   private readonly evaluationsService = inject(EvaluationsService);
   private readonly employeesService = inject(EmployeesService);
+  private readonly dialog = inject(MatDialog);
 
-  readonly displayedColumns = ['employee', 'quarter', 'year', 'overallScore', 'ratingBand', 'status'];
+  readonly displayedColumns = ['employee', 'quarter', 'year', 'overallScore', 'ratingBand', 'status', 'actions'];
   readonly quarters = Object.values(Quarter);
   readonly availableYears = [2023, 2024, 2025];
 
@@ -60,13 +64,7 @@ export class EvaluationList {
   });
 
   constructor() {
-    this.evaluationsService.findAll().subscribe({
-      next: (data) => {
-        this.evaluations.set(data);
-        this.isLoading.set(false);
-      },
-      error: () => this.isLoading.set(false),
-    });
+    this.loadData();
 
     this.employeesService.findAll().subscribe({
       next: (employees) => {
@@ -78,6 +76,29 @@ export class EvaluationList {
       },
       error: () => {},
     });
+  }
+
+  loadData(): void {
+    this.isLoading.set(true);
+    this.evaluationsService.findAll().subscribe({
+      next: (data) => {
+        this.evaluations.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false),
+    });
+  }
+
+  openForm(evaluation?: PerformanceEvaluation): void {
+    this.dialog
+      .open(EvaluationFormDialog, {
+        width: '640px',
+        data: { evaluation },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadData();
+      });
   }
 
   getEmployeeName(employeeId: string): string {

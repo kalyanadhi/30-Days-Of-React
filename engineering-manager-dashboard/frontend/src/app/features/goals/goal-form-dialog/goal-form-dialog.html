@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Goal' : 'Add Goal' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-2 min-w-[400px]">
+    <mat-form-field appearance="outline">
+      <mat-label>Employee</mat-label>
+      <mat-select formControlName="employeeId">
+        @for (emp of employees(); track emp.id) {
+          <mat-option [value]="emp.id">{{ emp.fullName }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('employeeId')?.hasError('required') && form.get('employeeId')?.touched) {
+        <mat-error>Employee is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+      @if (form.get('title')?.hasError('required') && form.get('title')?.touched) {
+        <mat-error>Title is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Due Date</mat-label>
+        <input matInput type="date" formControlName="dueDate" />
+        @if (form.get('dueDate')?.hasError('required') && form.get('dueDate')?.touched) {
+          <mat-error>Due date is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          @for (p of priorities; track p) {
+            <mat-option [value]="p">{{ p }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('priority')?.hasError('required') && form.get('priority')?.touched) {
+          <mat-error>Priority is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Progress (%)</mat-label>
+        <input matInput type="number" formControlName="progressPercentage" min="0" max="100" />
+        @if (form.get('progressPercentage')?.hasError('min') || form.get('progressPercentage')?.hasError('max')) {
+          <mat-error>Enter a value between 0 and 100</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          @for (s of statuses; track s) {
+            <mat-option [value]="s">{{ s }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('status')?.hasError('required') && form.get('status')?.touched) {
+          <mat-error>Status is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="isSaving()">
+    @if (isSaving()) {
+      <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+      {{ isEditMode ? 'Save Changes' : 'Create' }}
+    }
+  </button>
+</mat-dialog-actions>
