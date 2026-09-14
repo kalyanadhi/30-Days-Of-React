@@ -1,0 +1,111 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Evaluation' : 'Add Evaluation' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-2 min-w-[400px]">
+    <mat-form-field appearance="outline">
+      <mat-label>Employee</mat-label>
+      <mat-select formControlName="employeeId">
+        @for (emp of employees(); track emp.id) {
+          <mat-option [value]="emp.id">{{ emp.fullName }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('employeeId')?.hasError('required') && form.get('employeeId')?.touched) {
+        <mat-error>Employee is required</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Quarter</mat-label>
+        <mat-select formControlName="quarter">
+          @for (q of quarters; track q) {
+            <mat-option [value]="q">{{ q }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('quarter')?.hasError('required') && form.get('quarter')?.touched) {
+          <mat-error>Quarter is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Year</mat-label>
+        <input matInput type="number" formControlName="year" />
+        @if (form.get('year')?.hasError('required') && form.get('year')?.touched) {
+          <mat-error>Year is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <p class="text-sm text-on-surface-variant m-0">Scores (1–5, optional)</p>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Delivery</mat-label>
+        <input matInput type="number" formControlName="deliveryScore" min="1" max="5" />
+        @if (form.get('deliveryScore')?.hasError('min') || form.get('deliveryScore')?.hasError('max')) {
+          <mat-error>Enter a value between 1 and 5</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Technical</mat-label>
+        <input matInput type="number" formControlName="technicalScore" min="1" max="5" />
+        @if (form.get('technicalScore')?.hasError('min') || form.get('technicalScore')?.hasError('max')) {
+          <mat-error>Enter a value between 1 and 5</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Quality</mat-label>
+        <input matInput type="number" formControlName="qualityScore" min="1" max="5" />
+        @if (form.get('qualityScore')?.hasError('min') || form.get('qualityScore')?.hasError('max')) {
+          <mat-error>Enter a value between 1 and 5</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Collaboration</mat-label>
+        <input matInput type="number" formControlName="collaborationScore" min="1" max="5" />
+        @if (form.get('collaborationScore')?.hasError('min') || form.get('collaborationScore')?.hasError('max')) {
+          <mat-error>Enter a value between 1 and 5</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Learning</mat-label>
+        <input matInput type="number" formControlName="learningScore" min="1" max="5" />
+        @if (form.get('learningScore')?.hasError('min') || form.get('learningScore')?.hasError('max')) {
+          <mat-error>Enter a value between 1 and 5</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          @for (s of statuses; track s) {
+            <mat-option [value]="s">{{ s }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('status')?.hasError('required') && form.get('status')?.touched) {
+          <mat-error>Status is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Manager Feedback</mat-label>
+      <textarea matInput formControlName="managerFeedback" rows="4"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="isSaving()">
+    @if (isSaving()) {
+      <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+      {{ isEditMode ? 'Save Changes' : 'Create' }}
+    }
+  </button>
+</mat-dialog-actions>
