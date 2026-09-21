@@ -16,6 +16,7 @@ interface SummaryCard {
   value: string;
   icon: string;
   colorClass: string;
+  variant: 'primary' | 'success' | 'info' | 'warning' | 'danger';
 }
 
 interface QuickLink {
@@ -67,13 +68,13 @@ export class DashboardHome {
     }
 
     return [
-      { label: 'Total Team Members', value: `${summary.totalTeamMembers}`, icon: 'groups', colorClass: 'text-primary!' },
-      { label: 'High Performers', value: `${summary.highPerformers}`, icon: 'star', colorClass: 'text-success!' },
-      { label: 'Promotion Ready', value: `${summary.promotionReady}`, icon: 'trending_up', colorClass: 'text-tertiary!' },
-      { label: 'Employees at Risk', value: `${summary.employeesAtRisk}`, icon: 'warning', colorClass: 'text-error!' },
-      { label: 'Avg Team Rating', value: summary.averageTeamRating.toFixed(2), icon: 'insights', colorClass: 'text-primary!' },
-      { label: 'Open Development Plans', value: `${summary.openDevelopmentPlans}`, icon: 'school', colorClass: 'text-warning!' },
-      { label: 'Upcoming Reviews', value: `${summary.upcomingReviews}`, icon: 'event', colorClass: 'text-secondary!' },
+      { label: 'Team Members', value: `${summary.totalTeamMembers}`, icon: 'groups', colorClass: 'text-primary!', variant: 'primary' },
+      { label: 'High Performers', value: `${summary.highPerformers}`, icon: 'star', colorClass: 'text-success!', variant: 'success' },
+      { label: 'Promotion Ready', value: `${summary.promotionReady}`, icon: 'trending_up', colorClass: 'text-tertiary!', variant: 'info' },
+      { label: 'Avg Team Rating', value: summary.averageTeamRating.toFixed(2), icon: 'insights', colorClass: 'text-primary!', variant: 'primary' },
+      { label: 'Open Dev Plans', value: `${summary.openDevelopmentPlans}`, icon: 'school', colorClass: 'text-warning!', variant: 'warning' },
+      { label: 'Upcoming Reviews', value: `${summary.upcomingReviews}`, icon: 'event', colorClass: 'text-tertiary!', variant: 'info' },
+      { label: 'At Risk', value: `${summary.employeesAtRisk}`, icon: 'warning', colorClass: 'text-error!', variant: 'danger' },
     ];
   });
 
