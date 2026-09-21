@@ -16,7 +16,7 @@
       <mat-card-content class="p-4!">
         <div class="flex items-center gap-2">
           <mat-icon class="text-error!">cancel</mat-icon>
-          <span class="text-2xl font-bold text-error!">{{ dashboard()?.summary.notReady ?? 0 }}</span>
+          <span class="text-2xl font-bold text-error!">{{ dashboard()?.summary?.notReady ?? 0 }}</span>
         </div>
       </mat-card-content>
     </mat-card>
@@ -28,7 +28,7 @@
       <mat-card-content class="p-4!">
         <div class="flex items-center gap-2">
           <mat-icon class="text-warning!">schedule</mat-icon>
-          <span class="text-2xl font-bold text-warning!">{{ dashboard()?.summary.developing ?? 0 }}</span>
+          <span class="text-2xl font-bold text-warning!">{{ dashboard()?.summary?.developing ?? 0 }}</span>
         </div>
       </mat-card-content>
     </mat-card>
@@ -40,7 +40,7 @@
       <mat-card-content class="p-4!">
         <div class="flex items-center gap-2">
           <mat-icon class="text-blue-600">hourglass_top</mat-icon>
-          <span class="text-2xl font-bold text-blue-600">{{ dashboard()?.summary.nearReady ?? 0 }}</span>
+          <span class="text-2xl font-bold text-blue-600">{{ dashboard()?.summary?.nearReady ?? 0 }}</span>
         </div>
       </mat-card-content>
     </mat-card>
@@ -52,7 +52,7 @@
       <mat-card-content class="p-4!">
         <div class="flex items-center gap-2">
           <mat-icon class="text-green-600">check_circle</mat-icon>
-          <span class="text-2xl font-bold text-green-600">{{ dashboard()?.summary.promotionReady ?? 0 }}</span>
+          <span class="text-2xl font-bold text-green-600">{{ dashboard()?.summary?.promotionReady ?? 0 }}</span>
         </div>
       </mat-card-content>
     </mat-card>

@@ -81,7 +81,7 @@
       <mat-card>
         <mat-card-header>
           <mat-card-title class="text-base! flex items-center gap-2">
-            Preview: {{ reports.find(r => r.key === key)?.label }}
+            Preview: {{ reportLabel(previewingKey()) }}
             <span class="ml-auto">
               <button mat-icon-button (click)="closePreview()"><mat-icon>close</mat-icon></button>
             </span>

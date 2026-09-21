@@ -29,7 +29,7 @@
       <mat-icon class="text-base!">military_tech</mat-icon>
       <span>Total: <strong>{{ items().length }}</strong> achievements</span>
       @if (categoryFilter()) {
-        <span>&middot; Showing <strong>{{ filteredItems().length }}</strong> in <strong>{{ categoryLabel(categoryFilter()!) }}</strong></span>
+        <span>&middot; Showing <strong>{{ filteredItems().length }}</strong> in <strong>{{ categoryLabel($any(categoryFilter())) }}</strong></span>
         <button mat-button class="text-xs" (click)="categoryFilter.set('')">Clear filter</button>
       }
     </div>

@@ -105,6 +105,10 @@ export class EmployeeProfile implements OnInit {
     this.goals().filter((g) => g.status !== GoalStatus.COMPLETED).length,
   );
 
+  readonly atRiskGoalCount = computed(() =>
+    this.goals().filter((g) => g.status === GoalStatus.AT_RISK).length,
+  );
+
   ngOnInit(): void {
     this.isLoading.set(true);
     this.error.set(null);

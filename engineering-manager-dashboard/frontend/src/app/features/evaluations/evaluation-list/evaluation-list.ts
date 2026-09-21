@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +23,7 @@ import { EvaluationFormDialog } from '../evaluation-form-dialog/evaluation-form-
   standalone: true,
   imports: [
     DatePipe,
+    DecimalPipe,
     NgClass,
     FormsModule,
     MatTableModule,
@@ -30,6 +32,7 @@ import { EvaluationFormDialog } from '../evaluation-form-dialog/evaluation-form-
     MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatCardModule,
     MatChipsModule,
     MatButtonModule,
     EvaluationFormDialog,

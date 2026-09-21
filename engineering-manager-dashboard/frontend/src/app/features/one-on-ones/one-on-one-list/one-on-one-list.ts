@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -27,6 +28,7 @@ import { OneOnOneFormDialog } from '../one-on-one-form-dialog/one-on-one-form-di
     MatIconModule,
     MatChipsModule,
     MatButtonModule,
+    MatCardModule,
     MatProgressSpinnerModule,
     MatExpansionModule,
     MatTooltipModule,

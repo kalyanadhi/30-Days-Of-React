@@ -111,4 +111,8 @@ export class ReportsPage {
     this.previewingKey.set(null);
     this.previewData.set(null);
   }
+
+  reportLabel(key: string | null): string {
+    return this.reports.find((r) => r.key === key)?.label ?? '';
+  }
 }

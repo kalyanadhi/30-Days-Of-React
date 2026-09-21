@@ -198,28 +198,28 @@
                 <ng-container matColumnDef="delivery">
                   <mat-header-cell *matHeaderCellDef>Delivery</mat-header-cell>
                   <mat-cell *matCellDef="let row">
-                    <span [matTooltip]="CATEGORY_LABELS['delivery']">{{ row.scores?.delivery ?? '—' }}</span>
+                    <span [matTooltip]="CATEGORY_LABELS['deliveryScore']">{{ row.deliveryScore ?? '—' }}</span>
                   </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="technical">
                   <mat-header-cell *matHeaderCellDef>Technical</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{ row.scores?.technical ?? '—' }}</mat-cell>
+                  <mat-cell *matCellDef="let row">{{ row.technicalScore ?? '—' }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="quality">
                   <mat-header-cell *matHeaderCellDef>Quality</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{ row.scores?.quality ?? '—' }}</mat-cell>
+                  <mat-cell *matCellDef="let row">{{ row.qualityScore ?? '—' }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="collaboration">
                   <mat-header-cell *matHeaderCellDef>Collab</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{ row.scores?.collaboration ?? '—' }}</mat-cell>
+                  <mat-cell *matCellDef="let row">{{ row.collaborationScore ?? '—' }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="learning">
                   <mat-header-cell *matHeaderCellDef>Learning</mat-header-cell>
-                  <mat-cell *matCellDef="let row">{{ row.scores?.learning ?? '—' }}</mat-cell>
+                  <mat-cell *matCellDef="let row">{{ row.learningScore ?? '—' }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="overall">
@@ -277,7 +277,7 @@
               <mat-card-content class="flex! items-center gap-3 p-3!">
                 <mat-icon class="text-error! shrink-0">warning</mat-icon>
                 <div>
-                  <div class="text-2xl font-semibold">{{ goals().filter(g => g.status === GoalStatus.AT_RISK).length }}</div>
+                  <div class="text-2xl font-semibold">{{ atRiskGoalCount() }}</div>
                   <div class="text-xs text-on-surface-variant">At Risk</div>
                 </div>
               </mat-card-content>
