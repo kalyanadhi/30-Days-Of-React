@@ -78,6 +78,13 @@ mat-sidenav a[mat-list-item] {
   font-weight: 500 !important;
   transition: background 0.15s, color 0.15s !important;
 
+  /* Target MDC internal text span */
+  .mdc-list-item__primary-text {
+    color: #94a3b8 !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+  }
+
   mat-icon {
     color: #64748b !important;
     font-size: 18px !important;
@@ -91,6 +98,10 @@ mat-sidenav a[mat-list-item]:hover {
   background: rgba(148,163,184,.07) !important;
   color: #e2e8f0 !important;
 
+  .mdc-list-item__primary-text {
+    color: #e2e8f0 !important;
+  }
+
   mat-icon {
     color: #94a3b8 !important;
   }
@@ -100,6 +111,11 @@ mat-sidenav a[mat-list-item].active-nav-item {
   background: rgba(129,140,248,.14) !important;
   color: #a5b4fc !important;
   font-weight: 600 !important;
+
+  .mdc-list-item__primary-text {
+    color: #a5b4fc !important;
+    font-weight: 600 !important;
+  }
 
   mat-icon {
     color: #818cf8 !important;
