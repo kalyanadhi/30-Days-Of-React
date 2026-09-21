@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-6">
-  <div class="flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <mat-icon class="text-primary!">military_tech</mat-icon>
-      <h1 class="text-2xl font-semibold m-0">Achievements</h1>
-    </div>
+  <div class="page-header">
+    <h1 class="page-title">
+      <mat-icon>military_tech</mat-icon>
+      Achievements
+    </h1>
     <button mat-flat-button color="primary" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
       Add Achievement
@@ -13,14 +13,14 @@
   @if (!isLoading()) {
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
       @for (cat of categoryOptions; track cat) {
-        <mat-card class="cursor-pointer" [class.ring-2]="categoryFilter() === cat" (click)="categoryFilter.set(categoryFilter() === cat ? '' : cat)">
-          <mat-card-content class="p-3!">
-            <div class="flex items-center gap-1 mb-1">
-              <mat-icon class="text-base! leading-none" [class]="categoryColor(cat)">{{ categoryIcon(cat) }}</mat-icon>
-              <span class="text-xs font-medium truncate">{{ categoryLabel(cat) }}</span>
-            </div>
-            <div class="text-2xl font-bold" [class]="categoryColor(cat)">{{ categoryBreakdown()[cat] ?? 0 }}</div>
-          </mat-card-content>
+        <mat-card
+          class="kpi-tile kpi-tile--primary cursor-pointer"
+          [class.ring-2]="categoryFilter() === cat"
+          (click)="categoryFilter.set(categoryFilter() === cat ? '' : cat)"
+        >
+          <div class="kpi-icon"><mat-icon>{{ categoryIcon(cat) }}</mat-icon></div>
+          <div class="kpi-value">{{ categoryBreakdown()[cat] ?? 0 }}</div>
+          <div class="kpi-label">{{ categoryLabel(cat) }}</div>
         </mat-card>
       }
     </div>
@@ -35,21 +35,13 @@
     </div>
   }
 
-  <div class="flex gap-3 items-end flex-wrap">
-    <mat-form-field appearance="outline" class="w-full sm:w-56">
-      <mat-label>Filter by Category</mat-label>
-      <mat-select [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event)">
-        <mat-option value="">All categories</mat-option>
-        @for (cat of categoryOptions; track cat) {
-          <mat-option [value]="cat">
-            <div class="flex items-center gap-2">
-              <mat-icon class="text-base!" [class]="categoryColor(cat)">{{ categoryIcon(cat) }}</mat-icon>
-              {{ categoryLabel(cat) }}
-            </div>
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+  <div class="filter-bar">
+    <select class="filter-pill" [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event)">
+      <option value="">All Categories</option>
+      @for (cat of categoryOptions; track cat) {
+        <option [value]="cat">{{ categoryLabel(cat) }}</option>
+      }
+    </select>
   </div>
 
   @if (isLoading()) {

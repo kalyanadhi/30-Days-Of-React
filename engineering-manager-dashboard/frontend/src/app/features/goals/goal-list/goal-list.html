@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-4">
-  <div class="flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3">
-      <mat-icon class="text-primary!">flag</mat-icon>
-      <h1 class="text-2xl font-semibold m-0">Goals &amp; OKRs</h1>
-    </div>
+  <div class="page-header">
+    <h1 class="page-title">
+      <mat-icon>flag</mat-icon>
+      Goals &amp; OKRs
+    </h1>
     <button mat-raised-button color="primary" (click)="openForm()">
       <mat-icon>add</mat-icon>
       Add Goal
@@ -11,63 +11,44 @@
   </div>
 
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title class="text-base!">Total Goals</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="pt-2">
-        <span class="text-3xl font-bold text-primary!">{{ totalGoals() }}</span>
-      </mat-card-content>
+    <mat-card class="kpi-tile kpi-tile--primary">
+      <div class="kpi-icon"><mat-icon>flag</mat-icon></div>
+      <div class="kpi-value">{{ totalGoals() }}</div>
+      <div class="kpi-label">Total Goals</div>
     </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title class="text-base!">Completed</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="pt-2">
-        <span class="text-3xl font-bold text-green-600">{{ completedGoals() }}</span>
-      </mat-card-content>
+    <mat-card class="kpi-tile kpi-tile--success">
+      <div class="kpi-icon"><mat-icon>check_circle</mat-icon></div>
+      <div class="kpi-value">{{ completedGoals() }}</div>
+      <div class="kpi-label">Completed</div>
     </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title class="text-base!">In Progress</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="pt-2">
-        <span class="text-3xl font-bold text-blue-600">{{ inProgressGoals() }}</span>
-      </mat-card-content>
+    <mat-card class="kpi-tile kpi-tile--info">
+      <div class="kpi-icon"><mat-icon>pending</mat-icon></div>
+      <div class="kpi-value">{{ inProgressGoals() }}</div>
+      <div class="kpi-label">In Progress</div>
     </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title class="text-base!">At Risk</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="pt-2">
-        <span class="text-3xl font-bold text-error!">{{ atRiskGoals() }}</span>
-      </mat-card-content>
+    <mat-card class="kpi-tile kpi-tile--danger">
+      <div class="kpi-icon"><mat-icon>warning</mat-icon></div>
+      <div class="kpi-value">{{ atRiskGoals() }}</div>
+      <div class="kpi-label">At Risk</div>
     </mat-card>
   </div>
 
-  <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
-    <mat-form-field appearance="outline" class="w-full sm:w-52">
-      <mat-label>Status</mat-label>
-      <mat-select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)">
-        <mat-option value="">All statuses</mat-option>
-        @for (s of goalStatuses; track s) {
-          <mat-option [value]="s">{{ s }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="w-full sm:w-44">
-      <mat-label>Priority</mat-label>
-      <mat-select [ngModel]="selectedPriority()" (ngModelChange)="selectedPriority.set($event)">
-        <mat-option value="">All priorities</mat-option>
-        @for (p of goalPriorities; track p) {
-          <mat-option [value]="p">{{ p }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+  <div class="filter-bar">
+    <select class="filter-pill" [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)">
+      <option value="">All Status</option>
+      @for (s of goalStatuses; track s) {
+        <option [value]="s">{{ s }}</option>
+      }
+    </select>
+    <select class="filter-pill" [ngModel]="selectedPriority()" (ngModelChange)="selectedPriority.set($event)">
+      <option value="">All Priority</option>
+      @for (p of goalPriorities; track p) {
+        <option [value]="p">{{ p }}</option>
+      }
+    </select>
   </div>
 
   @if (isLoading()) {

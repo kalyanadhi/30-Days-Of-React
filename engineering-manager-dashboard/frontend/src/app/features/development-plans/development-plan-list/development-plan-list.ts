@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { DevelopmentPlansService } from '../../../core/services/development-plans.service';
 import { DevelopmentPlan } from '../../../core/models/development-plan.model';
@@ -29,6 +30,7 @@ import { DevelopmentPlanFormDialog } from '../development-plan-form-dialog/devel
     MatButtonModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatCardModule,
   ],
   templateUrl: './development-plan-list.html',
   styleUrl: './development-plan-list.scss',
@@ -56,6 +58,16 @@ export class DevelopmentPlanList {
     if (!filter) return this.items();
     return this.items().filter((i) => i.status === filter);
   });
+
+  readonly activePlanCount = computed(() =>
+    this.items().filter((i) => i.status === GoalStatus.IN_PROGRESS).length,
+  );
+  readonly completedPlanCount = computed(() =>
+    this.items().filter((i) => i.status === GoalStatus.COMPLETED).length,
+  );
+  readonly overdueCount = computed(() =>
+    this.items().filter((i) => this.isOverdue(i)).length,
+  );
 
   constructor() {
     this.loadData();

@@ -4,10 +4,11 @@
   </div>
 } @else {
   <div class="flex flex-col gap-4">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <mat-icon class="text-primary!">menu_book</mat-icon>
-        <h1 class="text-xl font-semibold">Learning & Development</h1>
+
+    <div class="page-header">
+      <div class="page-title">
+        <mat-icon>menu_book</mat-icon>
+        <span>Learning & Development</span>
       </div>
       <button mat-flat-button color="primary" (click)="openAddDialog()">
         <mat-icon>add</mat-icon>
@@ -16,57 +17,40 @@
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <mat-card>
-        <mat-card-content class="flex! items-center gap-4 p-4!">
-          <mat-icon class="text-primary! scale-125">schedule</mat-icon>
-          <div>
-            <div class="text-2xl font-semibold">{{ totalHours() }}h</div>
-            <div class="text-xs text-on-surface-variant">Total Learning Hours</div>
-          </div>
-        </mat-card-content>
+      <mat-card class="kpi-tile kpi-tile--primary">
+        <div class="kpi-icon"><mat-icon>schedule</mat-icon></div>
+        <div class="kpi-value">{{ totalHours() }}h</div>
+        <div class="kpi-label">Total Learning Hours</div>
       </mat-card>
-      <mat-card>
-        <mat-card-content class="flex! items-center gap-4 p-4!">
-          <mat-icon class="text-green-600! scale-125">check_circle</mat-icon>
-          <div>
-            <div class="text-2xl font-semibold">{{ completedCount() }}</div>
-            <div class="text-xs text-on-surface-variant">Completed</div>
-          </div>
-        </mat-card-content>
+      <mat-card class="kpi-tile kpi-tile--success">
+        <div class="kpi-icon"><mat-icon>check_circle</mat-icon></div>
+        <div class="kpi-value">{{ completedCount() }}</div>
+        <div class="kpi-label">Completed</div>
       </mat-card>
-      <mat-card>
-        <mat-card-content class="flex! items-center gap-4 p-4!">
-          <mat-icon class="text-blue-600! scale-125">pending</mat-icon>
-          <div>
-            <div class="text-2xl font-semibold">{{ inProgressCount() }}</div>
-            <div class="text-xs text-on-surface-variant">In Progress</div>
-          </div>
-        </mat-card-content>
+      <mat-card class="kpi-tile kpi-tile--info">
+        <div class="kpi-icon"><mat-icon>pending</mat-icon></div>
+        <div class="kpi-value">{{ inProgressCount() }}</div>
+        <div class="kpi-label">In Progress</div>
       </mat-card>
-      <mat-card>
-        <mat-card-content class="flex! items-center gap-4 p-4!">
-          <mat-icon class="text-warning! scale-125">hourglass_bottom</mat-icon>
-          <div>
-            <div class="text-2xl font-semibold">{{ expiringSoonCount() }}</div>
-            <div class="text-xs text-on-surface-variant">Expiring Soon</div>
-          </div>
-        </mat-card-content>
+      <mat-card class="kpi-tile kpi-tile--warning">
+        <div class="kpi-icon"><mat-icon>hourglass_bottom</mat-icon></div>
+        <div class="kpi-value">{{ expiringSoonCount() }}</div>
+        <div class="kpi-label">Expiring Soon</div>
       </mat-card>
     </div>
 
-    <div class="flex items-center gap-4 flex-wrap">
-      <mat-form-field appearance="outline" class="w-48">
-        <mat-label>Status</mat-label>
-        <mat-select [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
-          <mat-option value="">All</mat-option>
-          <mat-option [value]="LearningCompletionStatus.NOT_STARTED">Not Started</mat-option>
-          <mat-option [value]="LearningCompletionStatus.IN_PROGRESS">In Progress</mat-option>
-          <mat-option [value]="LearningCompletionStatus.COMPLETED">Completed</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-slide-toggle [checked]="filterExpiringSoon()" (change)="filterExpiringSoon.set($event.checked)">
-        Expiring soon only
-      </mat-slide-toggle>
+    <div class="filter-bar">
+      <select class="filter-pill" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
+        <option value="">All Status</option>
+        <option [value]="LearningCompletionStatus.NOT_STARTED">Not Started</option>
+        <option [value]="LearningCompletionStatus.IN_PROGRESS">In Progress</option>
+        <option [value]="LearningCompletionStatus.COMPLETED">Completed</option>
+      </select>
+      <div class="flex items-center gap-2 ml-2">
+        <mat-slide-toggle [checked]="filterExpiringSoon()" (change)="filterExpiringSoon.set($event.checked)" class="scale-90">
+          <span class="text-sm font-medium">Expiring soon</span>
+        </mat-slide-toggle>
+      </div>
     </div>
 
     <mat-card>
@@ -143,5 +127,6 @@
         }
       </mat-card-content>
     </mat-card>
+
   </div>
 }

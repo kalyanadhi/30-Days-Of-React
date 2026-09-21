@@ -1,36 +1,28 @@
 <div class="flex flex-col gap-4">
-  <div class="flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3">
-      <mat-icon class="text-primary!">assessment</mat-icon>
-      <h1 class="text-2xl font-semibold m-0">Performance Evaluations</h1>
-    </div>
+  <div class="page-header">
+    <h1 class="page-title">
+      <mat-icon>assessment</mat-icon>
+      Performance Evaluations
+    </h1>
     <button mat-raised-button color="primary" (click)="openForm()">
       <mat-icon>add</mat-icon>
       Add Evaluation
     </button>
   </div>
 
-  <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
-    <mat-form-field appearance="outline" class="w-full sm:w-44">
-      <mat-label>Year</mat-label>
-      <mat-select [ngModel]="selectedYear()" (ngModelChange)="selectedYear.set($event)">
-        <mat-option value="">All years</mat-option>
-        @for (year of availableYears; track year) {
-          <mat-option [value]="year">{{ year }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="w-full sm:w-44">
-      <mat-label>Quarter</mat-label>
-      <mat-select [ngModel]="selectedQuarter()" (ngModelChange)="selectedQuarter.set($event)">
-        <mat-option value="">All quarters</mat-option>
-        @for (q of quarters; track q) {
-          <mat-option [value]="q">{{ q }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
+  <div class="filter-bar">
+    <select class="filter-pill" [ngModel]="selectedYear()" (ngModelChange)="selectedYear.set($event)">
+      <option value="">All Years</option>
+      @for (year of availableYears; track year) {
+        <option [value]="year">{{ year }}</option>
+      }
+    </select>
+    <select class="filter-pill" [ngModel]="selectedQuarter()" (ngModelChange)="selectedQuarter.set($event)">
+      <option value="">All Quarters</option>
+      @for (q of quarters; track q) {
+        <option [value]="q">{{ q }}</option>
+      }
+    </select>
     @if (selectedQuarter() || selectedYear()) {
       <button mat-button (click)="clearFilters()" class="text-on-surface-variant">
         <mat-icon>close</mat-icon>

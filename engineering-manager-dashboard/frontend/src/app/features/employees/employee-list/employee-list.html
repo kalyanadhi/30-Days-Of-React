@@ -1,20 +1,29 @@
 <div class="flex flex-col gap-4">
-  <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
-    <mat-form-field appearance="outline" class="w-full sm:w-80">
-      <mat-label>Search</mat-label>
-      <mat-icon matPrefix class="mr-2 text-on-surface-variant">search</mat-icon>
-      <input matInput [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Name, email, or employee code" />
-    </mat-form-field>
+  <div class="page-header">
+    <div class="page-title">
+      <mat-icon>person</mat-icon>
+      <span>Employees</span>
+    </div>
+  </div>
 
-    <mat-form-field appearance="outline" class="w-full sm:w-56">
-      <mat-label>Department</mat-label>
-      <mat-select [ngModel]="department()" (ngModelChange)="department.set($event)">
-        <mat-option value="">All departments</mat-option>
-        @for (dept of departments(); track dept) {
-          <mat-option [value]="dept">{{ dept }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+  <div class="filter-bar">
+    <div class="relative">
+      <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant! text-[18px]!">search</mat-icon>
+      <input
+        type="text"
+        class="filter-pill pl-9!"
+        style="padding-left: 36px"
+        placeholder="Search employees..."
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+      />
+    </div>
+    <select class="filter-pill" [ngModel]="department()" (ngModelChange)="department.set($event)">
+      <option value="">All Departments</option>
+      @for (dept of departments(); track dept) {
+        <option [value]="dept">{{ dept }}</option>
+      }
+    </select>
   </div>
 
   @if (isLoading()) {

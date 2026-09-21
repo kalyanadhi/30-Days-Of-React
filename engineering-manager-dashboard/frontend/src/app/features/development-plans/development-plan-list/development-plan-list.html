@@ -1,8 +1,8 @@
 <div class="flex flex-col gap-6">
-  <div class="flex items-center justify-between gap-2 flex-wrap">
-    <div class="flex items-center gap-2">
-      <mat-icon class="text-primary!">school</mat-icon>
-      <h1 class="text-2xl font-semibold m-0">Development Plans</h1>
+  <div class="page-header">
+    <div class="page-title">
+      <mat-icon>school</mat-icon>
+      <span>Development Plans</span>
     </div>
     <button mat-flat-button color="primary" (click)="openCreateDialog()">
       <mat-icon>add</mat-icon>
@@ -10,16 +10,35 @@
     </button>
   </div>
 
-  <div class="flex gap-3 items-end flex-wrap">
-    <mat-form-field appearance="outline" class="w-full sm:w-56">
-      <mat-label>Filter by Status</mat-label>
-      <mat-select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
-        <mat-option value="">All statuses</mat-option>
-        @for (s of statusOptions; track s) {
-          <mat-option [value]="s">{{ statusLabel(s) }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+  @if (!isLoading()) {
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <mat-card class="kpi-tile kpi-tile--primary">
+        <div class="kpi-icon"><mat-icon>trending_up</mat-icon></div>
+        <div class="kpi-value">{{ activePlanCount() }}</div>
+        <div class="kpi-label">Active Plans</div>
+      </mat-card>
+
+      <mat-card class="kpi-tile kpi-tile--success">
+        <div class="kpi-icon"><mat-icon>check_circle</mat-icon></div>
+        <div class="kpi-value">{{ completedPlanCount() }}</div>
+        <div class="kpi-label">Completed</div>
+      </mat-card>
+
+      <mat-card class="kpi-tile" [class.kpi-tile--danger]="overdueCount() > 0" [class.kpi-tile--success]="overdueCount() === 0">
+        <div class="kpi-icon"><mat-icon>schedule</mat-icon></div>
+        <div class="kpi-value">{{ overdueCount() }}</div>
+        <div class="kpi-label">Overdue</div>
+      </mat-card>
+    </div>
+  }
+
+  <div class="filter-bar">
+    <select class="filter-pill" [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+      <option value="">All Statuses</option>
+      @for (s of statusOptions; track s) {
+        <option [value]="s">{{ statusLabel(s) }}</option>
+      }
+    </select>
   </div>
 
   @if (isLoading()) {
