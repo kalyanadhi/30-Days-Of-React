@@ -1,0 +1,79 @@
+@if (isLoading()) {
+  <div class="flex justify-center py-16">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <div class="flex flex-col gap-4">
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-2">
+        <mat-icon class="text-primary!">notifications</mat-icon>
+        <h1 class="text-xl font-semibold">Notifications</h1>
+        @if (unreadCount() > 0) {
+          <span class="inline-flex items-center justify-center size-6 rounded-full bg-error text-on-error text-xs font-semibold">
+            {{ unreadCount() }}
+          </span>
+        }
+      </div>
+      <div class="flex items-center gap-2">
+        <button mat-button (click)="toggleFilter()">
+          <mat-icon>{{ filterUnread() ? 'filter_list_off' : 'filter_list' }}</mat-icon>
+          {{ filterUnread() ? 'Show all' : 'Unread only' }}
+        </button>
+        @if (unreadCount() > 0) {
+          <button mat-button (click)="markAllRead()">
+            <mat-icon>done_all</mat-icon>
+            Mark all read
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (filtered().length === 0) {
+      <mat-card>
+        <mat-card-content class="flex! flex-col items-center gap-2 py-12!">
+          <mat-icon class="scale-150 text-on-surface-variant!">notifications_none</mat-icon>
+          <p class="text-on-surface-variant mt-4">
+            {{ filterUnread() ? 'No unread notifications.' : 'No notifications.' }}
+          </p>
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <div class="flex flex-col gap-2">
+        @for (notification of filtered(); track notification.id) {
+          <mat-card
+            [class.opacity-60]="notification.isRead"
+            class="cursor-pointer hover:shadow-md transition-shadow"
+            (click)="markRead(notification)"
+          >
+            <mat-card-content class="flex! items-start gap-4 p-4!">
+              <mat-icon [class]="typeColor(notification.type) + ' mt-0.5 shrink-0'">
+                {{ typeIcon(notification.type) }}
+              </mat-icon>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-4">
+                  <p class="font-medium leading-snug" [class.font-semibold]="!notification.isRead">
+                    {{ notification.message }}
+                  </p>
+                  @if (!notification.isRead) {
+                    <span class="size-2 rounded-full bg-primary shrink-0 mt-1.5"></span>
+                  }
+                </div>
+                <div class="flex items-center gap-3 mt-1 flex-wrap">
+                  <mat-chip class="text-xs! h-6!">{{ typeLabel(notification.type) }}</mat-chip>
+                  <span class="text-xs text-on-surface-variant">
+                    {{ notification.createdAt | date:'medium' }}
+                  </span>
+                  @if (notification.dueDate) {
+                    <span class="text-xs text-warning!">
+                      Due {{ notification.dueDate | date:'mediumDate' }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+}

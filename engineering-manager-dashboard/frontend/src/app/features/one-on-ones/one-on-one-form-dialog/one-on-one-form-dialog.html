@@ -1,0 +1,85 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit 1:1 Meeting' : 'New 1:1 Meeting' }}</h2>
+
+<mat-dialog-content class="min-w-[480px]!">
+  @if (isLoadingEmployees()) {
+    <div class="flex justify-center py-8">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-4 pt-2">
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Employee</mat-label>
+        <mat-select [(ngModel)]="employeeId" [disabled]="employeeIdDisabled" required>
+          @for (emp of employees(); track emp.id) {
+            <mat-option [value]="emp.id">{{ emp.fullName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Meeting Date</mat-label>
+        <input matInput type="date" [(ngModel)]="meetingDate" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Notes</mat-label>
+        <textarea matInput [(ngModel)]="notes" rows="3" placeholder="Discussion notes…"></textarea>
+      </mat-form-field>
+
+      <div>
+        <div class="text-sm font-medium mb-2">Action Items</div>
+        @if (actionItems().length > 0) {
+          <mat-chip-set class="mb-3">
+            @for (item of actionItems(); track $index) {
+              <mat-chip (removed)="removeActionItem($index)">
+                {{ item }}
+                <button matChipRemove type="button"><mat-icon>cancel</mat-icon></button>
+              </mat-chip>
+            }
+          </mat-chip-set>
+        }
+        <div class="flex gap-2 items-center">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>New action item</mat-label>
+            <input
+              matInput
+              [(ngModel)]="newActionItem"
+              (keydown.enter)="addActionItem(); $event.preventDefault()"
+              placeholder="Type and press Add or Enter"
+            >
+          </mat-form-field>
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="addActionItem()"
+            class="mb-5"
+          >Add</button>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Follow-up Date (optional)</mat-label>
+        <input matInput type="date" [(ngModel)]="followUpDate">
+      </mat-form-field>
+
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="gap-2">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="button"
+    [disabled]="!isFormValid() || isSaving()"
+    (click)="submit()"
+  >
+    @if (isSaving()) {
+      <mat-spinner diameter="20" class="inline-block"></mat-spinner>
+    } @else {
+      {{ isEdit ? 'Save Changes' : 'Create' }}
+    }
+  </button>
+</mat-dialog-actions>

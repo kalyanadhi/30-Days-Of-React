@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Add Achievement</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-2 min-w-[360px]">
+    <mat-form-field appearance="outline">
+      <mat-label>Employee</mat-label>
+      <mat-select formControlName="employeeId">
+        @for (emp of employees(); track emp.id) {
+          <mat-option [value]="emp.id">{{ emp.fullName }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('employeeId')?.hasError('required') && form.get('employeeId')?.touched) {
+        <mat-error>Employee is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+      @if (form.get('title')?.hasError('required') && form.get('title')?.touched) {
+        <mat-error>Title is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        @for (cat of categoryOptions; track cat) {
+          <mat-option [value]="cat">{{ categoryLabel(cat) }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('category')?.hasError('required') && form.get('category')?.touched) {
+        <mat-error>Category is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input matInput type="date" formControlName="date" />
+      @if (form.get('date')?.hasError('required') && form.get('date')?.touched) {
+        <mat-error>Date is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Impact Description</mat-label>
+      <textarea matInput formControlName="impactDescription" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" [disabled]="isSaving()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="isSaving()">
+    @if (isSaving()) {
+      <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+      Save
+    }
+  </button>
+</mat-dialog-actions>

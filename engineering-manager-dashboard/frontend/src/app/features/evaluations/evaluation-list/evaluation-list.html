@@ -1,0 +1,110 @@
+<div class="flex flex-col gap-4">
+  <div class="page-header">
+    <h1 class="page-title">
+      <mat-icon>assessment</mat-icon>
+      Performance Evaluations
+    </h1>
+    <button mat-raised-button color="primary" (click)="openForm()">
+      <mat-icon>add</mat-icon>
+      Add Evaluation
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <select class="filter-pill" [ngModel]="selectedYear()" (ngModelChange)="selectedYear.set($event)">
+      <option value="">All Years</option>
+      @for (year of availableYears; track year) {
+        <option [value]="year">{{ year }}</option>
+      }
+    </select>
+    <select class="filter-pill" [ngModel]="selectedQuarter()" (ngModelChange)="selectedQuarter.set($event)">
+      <option value="">All Quarters</option>
+      @for (q of quarters; track q) {
+        <option [value]="q">{{ q }}</option>
+      }
+    </select>
+    @if (selectedQuarter() || selectedYear()) {
+      <button mat-button (click)="clearFilters()" class="text-on-surface-variant">
+        <mat-icon>close</mat-icon>
+        Clear filters
+      </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center py-16">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    <div class="overflow-x-auto rounded-lg border border-outline-variant">
+      <table mat-table [dataSource]="filteredEvaluations()" class="w-full">
+        <ng-container matColumnDef="employee">
+          <th mat-header-cell *matHeaderCellDef>Employee</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="font-medium">{{ row.employee?.fullName ?? getEmployeeName(row.employeeId) }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quarter">
+          <th mat-header-cell *matHeaderCellDef>Quarter</th>
+          <td mat-cell *matCellDef="let row">{{ row.quarter }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="year">
+          <th mat-header-cell *matHeaderCellDef>Year</th>
+          <td mat-cell *matCellDef="let row">{{ row.year }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="overallScore">
+          <th mat-header-cell *matHeaderCellDef>Score</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-block w-2 h-2 rounded-full"
+                [ngClass]="{
+                  'bg-green-600': row.overallScore >= 4.5,
+                  'bg-blue-600': row.overallScore >= 3.5 && row.overallScore < 4.5,
+                  'bg-yellow-500': row.overallScore >= 2.5 && row.overallScore < 3.5,
+                  'bg-red-500': row.overallScore < 2.5
+                }"
+              ></span>
+              <span>{{ row.overallScore | number:'1.1-1' }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ratingBand">
+          <th mat-header-cell *matHeaderCellDef>Rating</th>
+          <td mat-cell *matCellDef="let row">
+            <mat-chip [class]="ratingColor(row.ratingBand)">{{ row.ratingBand }}</mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="text-sm text-on-surface-variant">{{ row.status }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="openForm(row)" aria-label="Edit evaluation">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-surface-container-high transition-colors"></tr>
+      </table>
+
+      @if (filteredEvaluations().length === 0) {
+        <div class="flex justify-center py-12 text-on-surface-variant text-sm">
+          No evaluations match your filters.
+        </div>
+      }
+    </div>
+  }
+</div>

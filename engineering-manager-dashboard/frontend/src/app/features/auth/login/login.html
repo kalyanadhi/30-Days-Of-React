@@ -1,0 +1,87 @@
+<div class="login-page">
+  <div class="login-card">
+
+    <!-- Logo -->
+    <div class="login-logo">
+      <mat-icon>insights</mat-icon>
+    </div>
+    <div class="login-title">Engineering Manager<br>Dashboard</div>
+    <div class="login-subtitle">Sign in to your workspace</div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <!-- Email -->
+      <div class="field">
+        <mat-icon class="field-icon">mail_outline</mat-icon>
+        <input
+          class="field-input"
+          type="email"
+          placeholder="Email address"
+          formControlName="email"
+          autocomplete="email"
+        />
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <div class="field-error">Email is required</div>
+        }
+        @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+          <div class="field-error">Enter a valid email</div>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="field">
+        <mat-icon class="field-icon">lock_outline</mat-icon>
+        <input
+          class="field-input"
+          [type]="hidePassword() ? 'password' : 'text'"
+          placeholder="Password"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        <div class="field-suffix">
+          <button mat-icon-button type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <div class="field-error">Password is required</div>
+        }
+      </div>
+
+      <!-- Server error -->
+      @if (error()) {
+        <div class="error-banner">
+          <mat-icon>error_outline</mat-icon>
+          {{ error() }}
+        </div>
+      }
+
+      <!-- Submit -->
+      <button class="signin-btn" type="submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <mat-spinner diameter="18"></mat-spinner>
+        }
+        Sign In
+      </button>
+    </form>
+
+    <!-- Demo credentials -->
+    <div class="demo-section">
+      <div class="demo-label">Demo credentials &nbsp;·&nbsp; Password&#64;123</div>
+      <div class="demo-row">
+        <span class="demo-role">Director</span>
+        <span class="demo-email">anita.sharma&#64;nimbustech.io</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-role">Eng. Mgr</span>
+        <span class="demo-email">rahul.mehta&#64;nimbustech.io</span>
+      </div>
+      <div class="demo-row">
+        <span class="demo-role">Employee</span>
+        <span class="demo-email">priya.nair&#64;nimbustech.io</span>
+      </div>
+    </div>
+
+  </div>
+</div>

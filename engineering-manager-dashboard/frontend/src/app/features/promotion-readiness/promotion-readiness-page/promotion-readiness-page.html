@@ -1,0 +1,127 @@
+<div class="flex items-center gap-2 mb-4">
+  <mat-icon class="text-primary!">trending_up</mat-icon>
+  <h1 class="text-xl font-semibold">Promotion Readiness</h1>
+</div>
+
+@if (isLoading()) {
+  <div class="flex justify-center py-16">
+    <mat-spinner diameter="40" />
+  </div>
+} @else {
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title class="text-base!">Not Ready</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4!">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-error!">cancel</mat-icon>
+          <span class="text-2xl font-bold text-error!">{{ dashboard()?.summary?.notReady ?? 0 }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title class="text-base!">Developing</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4!">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-warning!">schedule</mat-icon>
+          <span class="text-2xl font-bold text-warning!">{{ dashboard()?.summary?.developing ?? 0 }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title class="text-base!">Near Ready</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4!">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-blue-600">hourglass_top</mat-icon>
+          <span class="text-2xl font-bold text-blue-600">{{ dashboard()?.summary?.nearReady ?? 0 }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title class="text-base!">Promotion Ready</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4!">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-green-600">check_circle</mat-icon>
+          <span class="text-2xl font-bold text-green-600">{{ dashboard()?.summary?.promotionReady ?? 0 }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title class="text-base!">Employee Readiness</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="p-4!">
+      <div class="overflow-x-auto">
+        <table mat-table [dataSource]="dashboard()?.items ?? []" class="w-full">
+          <ng-container matColumnDef="employee">
+            <th mat-header-cell *matHeaderCellDef>Employee</th>
+            <td mat-cell *matCellDef="let item">{{ item.employee.fullName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="designation">
+            <th mat-header-cell *matHeaderCellDef>Designation</th>
+            <td mat-cell *matCellDef="let item">{{ item.employee.designation }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="department">
+            <th mat-header-cell *matHeaderCellDef>Department</th>
+            <td mat-cell *matCellDef="let item">{{ item.employee.department }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="readinessBand">
+            <th mat-header-cell *matHeaderCellDef>Readiness Band</th>
+            <td mat-cell *matCellDef="let item">
+              @if (item.assessment) {
+                <mat-chip [class]="bandColor(item.assessment.readinessBand)">
+                  {{ item.assessment.readinessBand }}
+                </mat-chip>
+              } @else {
+                <mat-chip class="text-on-surface-variant!">Not Assessed</mat-chip>
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="readinessPercentage">
+            <th mat-header-cell *matHeaderCellDef>Readiness %</th>
+            <td mat-cell *matCellDef="let item">
+              <div class="flex items-center gap-2 min-w-24">
+                <mat-progress-bar
+                  mode="determinate"
+                  [value]="item.assessment?.readinessPercentage ?? 0"
+                  class="flex-1"
+                />
+                <span class="text-sm w-10 text-right">{{ item.assessment?.readinessPercentage ?? 0 }}%</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="assessmentDate">
+            <th mat-header-cell *matHeaderCellDef>Assessment Date</th>
+            <td mat-cell *matCellDef="let item">
+              {{ item.assessment?.assessmentDate | date: 'mediumDate' }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            [class]="row.assessment ? bandBg(row.assessment.readinessBand) : ''"
+          ></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+}

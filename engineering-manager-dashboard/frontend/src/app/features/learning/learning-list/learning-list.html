@@ -1,0 +1,132 @@
+@if (isLoading()) {
+  <div class="flex justify-center py-16">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <div class="flex flex-col gap-4">
+
+    <div class="page-header">
+      <div class="page-title">
+        <mat-icon>menu_book</mat-icon>
+        <span>Learning & Development</span>
+      </div>
+      <button mat-flat-button color="primary" (click)="openAddDialog()">
+        <mat-icon>add</mat-icon>
+        Add Training
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <mat-card class="kpi-tile kpi-tile--primary">
+        <div class="kpi-icon"><mat-icon>schedule</mat-icon></div>
+        <div class="kpi-value">{{ totalHours() }}h</div>
+        <div class="kpi-label">Total Learning Hours</div>
+      </mat-card>
+      <mat-card class="kpi-tile kpi-tile--success">
+        <div class="kpi-icon"><mat-icon>check_circle</mat-icon></div>
+        <div class="kpi-value">{{ completedCount() }}</div>
+        <div class="kpi-label">Completed</div>
+      </mat-card>
+      <mat-card class="kpi-tile kpi-tile--info">
+        <div class="kpi-icon"><mat-icon>pending</mat-icon></div>
+        <div class="kpi-value">{{ inProgressCount() }}</div>
+        <div class="kpi-label">In Progress</div>
+      </mat-card>
+      <mat-card class="kpi-tile kpi-tile--warning">
+        <div class="kpi-icon"><mat-icon>hourglass_bottom</mat-icon></div>
+        <div class="kpi-value">{{ expiringSoonCount() }}</div>
+        <div class="kpi-label">Expiring Soon</div>
+      </mat-card>
+    </div>
+
+    <div class="filter-bar">
+      <select class="filter-pill" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
+        <option value="">All Status</option>
+        <option [value]="LearningCompletionStatus.NOT_STARTED">Not Started</option>
+        <option [value]="LearningCompletionStatus.IN_PROGRESS">In Progress</option>
+        <option [value]="LearningCompletionStatus.COMPLETED">Completed</option>
+      </select>
+      <div class="flex items-center gap-2 ml-2">
+        <mat-slide-toggle [checked]="filterExpiringSoon()" (change)="filterExpiringSoon.set($event.checked)" class="scale-90">
+          <span class="text-sm font-medium">Expiring soon</span>
+        </mat-slide-toggle>
+      </div>
+    </div>
+
+    <mat-card>
+      <mat-card-content class="overflow-x-auto p-0!">
+        <mat-table [dataSource]="filtered()">
+          <ng-container matColumnDef="trainingName">
+            <mat-header-cell *matHeaderCellDef>Training</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <div>
+                <div class="font-medium">{{ row.trainingName }}</div>
+                @if (row.certificationName) {
+                  <div class="text-xs text-on-surface-variant">{{ row.certificationName }}</div>
+                }
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="skillArea">
+            <mat-header-cell *matHeaderCellDef>Skill Area</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.skillArea }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="learningHours">
+            <mat-header-cell *matHeaderCellDef>Hours</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{ row.learningHours }}h</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="completionStatus">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <mat-chip [class]="statusColor(row.completionStatus)">
+                {{ row.completionStatus.replace('_', ' ') }}
+              </mat-chip>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="completionDate">
+            <mat-header-cell *matHeaderCellDef>Completed</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{ row.completionDate ? (row.completionDate | date:'mediumDate') : '—' }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="expiryDate">
+            <mat-header-cell *matHeaderCellDef>Expires</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              @if (!row.expiryDate) {
+                <span class="text-on-surface-variant">—</span>
+              } @else if (isExpired(row.expiryDate)) {
+                <span class="text-error!">{{ row.expiryDate | date:'mediumDate' }}</span>
+              } @else if (isExpiringSoon(row.expiryDate)) {
+                <span class="text-warning!">{{ row.expiryDate | date:'mediumDate' }}</span>
+              } @else {
+                <span>{{ row.expiryDate | date:'mediumDate' }}</span>
+              }
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <button mat-icon-button (click)="openEditDialog(row)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+
+        @if (filtered().length === 0) {
+          <div class="flex justify-center py-8 text-on-surface-variant">No learning activities found.</div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+}
